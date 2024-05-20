@@ -1,0 +1,11 @@
+volumes:
+  lw_data:
+    external: false
+
+services:
+  web:
+    build: .
+    ports:
+      - "${LOAN_WOLF_LOCAL_PORT:-3000}:3000"
+    volumes:
+      - lw_data:/data
