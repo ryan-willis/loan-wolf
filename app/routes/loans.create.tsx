@@ -1,5 +1,6 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import ShortUniqueId from "short-unique-id";
+import { commitSession, getSession } from "~/session";
 import { db } from "~/utils/db.server";
 import { hashPassword } from "~/utils/security.server";
 
@@ -28,7 +29,17 @@ export async function action({ request }: ActionFunctionArgs) {
   };
 
   const loan = await db.loan.create({ data });
-  return redirect(`/loans/${loan.publicId}`);
+
+  const session = await getSession(request.headers.get("Cookie"));
+  const loans = new Set(session.get("loans") || []);
+  loans.add(loan.publicId);
+  session.set("loans", [...loans]);
+  return redirect(`/loans/${loan.publicId}`, {
+    status: 303,
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 }
 
 export default function CreateLoanRoute() {

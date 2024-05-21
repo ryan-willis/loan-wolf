@@ -35,12 +35,12 @@ export default function LoanRoute() {
   return (
     <div>
       <h1>Loan Details</h1>
-      <h2>{loan.name}</h2>
+      <a href={`/loans/${loan.publicId}/manage`}>Manage Loan</a>
       <table border={1} cellPadding={8}>
         <tbody>
           <tr>
-            <th>Loan ID</th>
-            <td>{loan.id}</td>
+            <th>Loan Name</th>
+            <td>{loan.name}</td>
           </tr>
           <tr>
             <th>Amount</th>

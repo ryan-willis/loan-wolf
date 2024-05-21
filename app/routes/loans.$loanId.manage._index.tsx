@@ -99,12 +99,11 @@ export default function LoanManageRoute() {
   return (
     <div>
       <h1>Manage Loan</h1>
-      <h2>{loan.name}</h2>
       <table border={1} cellPadding={8}>
         <tbody>
           <tr>
-            <th>Loan ID</th>
-            <td>{loan.id}</td>
+            <th>Loan Name</th>
+            <td>{loan.name}</td>
           </tr>
           <tr>
             <th>Amount</th>
