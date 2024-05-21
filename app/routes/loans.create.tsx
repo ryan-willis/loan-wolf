@@ -1,6 +1,7 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import ShortUniqueId from "short-unique-id";
 import { db } from "~/utils/db.server";
+import { hashPassword } from "~/utils/security.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   const form = await request.formData();
@@ -10,6 +11,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const term = Number(form.get("num_installments"));
   const startAt = new Date(form.get("start_date") + "Z").getTime();
   const paymentInterval = Number(form.get("payment_interval"));
+  const managePasswordRaw = String(form.get("loan_name"));
   const interestCompounds = paymentInterval;
 
   const data = {
@@ -22,6 +24,7 @@ export async function action({ request }: ActionFunctionArgs) {
     interestCompounds,
     status: "active",
     publicId: new ShortUniqueId({ length: 10 }).randomUUID(),
+    managePassword: await hashPassword(managePasswordRaw),
   };
 
   const loan = await db.loan.create({ data });
@@ -60,6 +63,10 @@ export default function CreateLoanRoute() {
         <label>
           Start Date:
           <input type="date" name="start_date" />
+        </label>
+        <label>
+          Management Password:
+          <input type="password" name="manage_password" />
         </label>
         <label>
           Payment Interval:

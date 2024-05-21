@@ -34,6 +34,7 @@ export default function LoanRoute() {
   });
   return (
     <div>
+      <h1>Loan Details</h1>
       <h2>{loan.name}</h2>
       <table border={1} cellPadding={8}>
         <tbody>

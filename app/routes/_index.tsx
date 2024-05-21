@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
+    <div>
       <h1>Welcome to Loan Wolf</h1>
       <a href="/loans/sample-loan">View Sample Loan</a>
       <a href="/loans">Go to Loans</a>

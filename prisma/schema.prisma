@@ -23,6 +23,7 @@ model Loan {
   status String
   startAt Float
   paymentInterval Int // see PaymentInterval TypeScript enum
+  managePassword String @default("denied")
   payments Payment[]
 }
 
