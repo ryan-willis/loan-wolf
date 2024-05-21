@@ -2,9 +2,11 @@ import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
 
+const SAMPLE_LOAN_PUBLIC_ID = "sample-loan";
+
 (async function () {
   const exists = await db.loan.findUnique({
-    where: { publicId: "sample-loan" },
+    where: { publicId: SAMPLE_LOAN_PUBLIC_ID },
   });
   if (exists) {
     return;
@@ -15,9 +17,11 @@ const db = new PrismaClient();
       amount: 10_000,
       interestRate: 0.05,
       term: 12,
-      publicId: "sample-loan",
+      publicId: SAMPLE_LOAN_PUBLIC_ID,
       startAt: new Date("2021-01-21").getTime(),
       status: "active",
+      paymentInterval: 5, //monthly
+      interestCompounds: 5, //monthly
     },
   });
   await db.payment.create({

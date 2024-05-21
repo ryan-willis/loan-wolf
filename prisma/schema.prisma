@@ -18,9 +18,11 @@ model Loan {
   name String
   amount Float
   interestRate Float // 0.05456 = 5.456%
+  interestCompounds Int // see PaymentInterval TypeScript enum
   term Int // in months
   status String
   startAt Float
+  paymentInterval Int // see PaymentInterval TypeScript enum
   payments Payment[]
 }
 

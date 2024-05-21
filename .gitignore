@@ -5,3 +5,4 @@ node_modules
 .env
 /prisma/dev.*
 /prisma/*.js
+/tmp/

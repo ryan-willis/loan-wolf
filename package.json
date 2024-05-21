@@ -4,11 +4,14 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "prebuild": "esbuild --platform=node --outfile=prisma/seed.js prisma/seed.ts",
+    "prebuild": "npm run build:seed",
     "build": "remix vite:build",
+    "build:seed": "esbuild --platform=node --outfile=prisma/seed.js prisma/seed.ts",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
+    "premigrate:dev": "npm run build:seed",
+    "migrate:dev": "prisma migrate dev && prisma db seed",
     "build:contained": "remix vite:build",
     "prestart:contained": "prisma migrate deploy && prisma db seed",
     "start:contained": "remix-serve ./build/server/index.js"
@@ -19,8 +22,10 @@
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
     "isbot": "^4.1.0",
+    "loanjs": "^1.1.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "short-unique-id": "^5.2.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",

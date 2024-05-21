@@ -10,7 +10,6 @@ WORKDIR /myapp
 ADD package*.json ./
 RUN npm install --include=dev
 ADD prisma .
-RUN npx prisma -v
 RUN npx prisma generate
 ADD . .
 RUN npm run build
@@ -35,6 +34,7 @@ ADD . .
 EXPOSE 3000
 
 RUN mkdir -p /data/loan-wolf
+VOLUME [ "/data/loan-wolf" ]
 ENV DATABASE_URL file:/data/loan-wolf/sqlite3.db
 
 CMD ["npm", "run", "start:contained"]

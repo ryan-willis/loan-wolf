@@ -1,7 +1,9 @@
 export default function LoansIndexRoute() {
   return (
     <div>
-      <button>Create a Loan</button>
+      <a href="/loans/create">
+        <button>Create a Loan</button>
+      </a>
       <p>or</p>
       <button>Sign In</button>
     </div>
