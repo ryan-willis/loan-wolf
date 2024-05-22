@@ -1,4 +1,4 @@
-// note: probably best to leave this enum alone, the values are used in the database
+// NOTE: probably best to leave this enum alone, the values are used in the database
 export enum PaymentInterval {
   DAILY = 1,
   WEEKLY = 2,

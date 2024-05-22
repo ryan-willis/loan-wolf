@@ -9,6 +9,14 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     where: {
       OR: [{ publicId: params.loanId }, { id: params.loanId }],
     },
+    select: {
+      publicId: true,
+      name: true,
+      amount: true,
+      interestRate: true,
+      term: true,
+      startAt: true,
+    },
   });
   if (loans.length == 0) {
     throw new Response("Loan not found", {

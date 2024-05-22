@@ -2,7 +2,7 @@
 FROM node:18-alpine as base
 ENV NODE_ENV production
 # Install openssl for Prisma
-RUN apk add openssl
+RUN apk add openssl && rm -rf /var/cache/apk/*
 
 # Setup development/build node_modules
 FROM base as build
@@ -28,8 +28,8 @@ COPY --from=production-deps /myapp/node_modules /myapp/node_modules
 COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma
 COPY --from=build /myapp/build /myapp/build
 COPY --from=build /myapp/public /myapp/public
-COPY --from=build /myapp/prisma/*.js /myapp/prisma/
-ADD . .
+COPY --from=build /myapp/prisma /myapp/prisma
+COPY --from=build /myapp/package.json /myapp/
 
 EXPOSE 3000
 
