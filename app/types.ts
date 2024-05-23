@@ -32,3 +32,15 @@ export function getPaymentIntervalString(interval: PaymentInterval): string {
       return "Unknown";
   }
 }
+
+export interface ILoan {
+  originalAmount: number;
+  interestRate: number;
+  term: number;
+  currentAmount: number;
+}
+
+export interface IPayment {
+  date?: number;
+  amount: number;
+}

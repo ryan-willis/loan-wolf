@@ -16,7 +16,7 @@ model Loan {
   amount Float
   interestRate Float // 0.05456 = 5.456%
   interestCompounds Int // see PaymentInterval TypeScript enum
-  term Int // in months
+  term Int // in months? or payment intervals?
   status String
   startAt Float
   paymentInterval Int // see PaymentInterval TypeScript enum
@@ -32,4 +32,5 @@ model Payment {
   loanId String
   amount Float
   paidAt Float
+  installment Int @default(0) // which of the interval payments this applies to, 0 if principal-only
 }

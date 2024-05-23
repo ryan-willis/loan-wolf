@@ -61,7 +61,7 @@ export default function CreateLoanRoute() {
         </label>
         <label>
           Loan Amount:
-          <input type="number" name="principal_amount" />
+          <input type="number" name="principal_amount" step=".01" />
         </label>
         <label>
           Interest Rate:
