@@ -15,10 +15,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap"
+          rel="stylesheet"
+        />
         <Meta />
         <Links />
       </head>
-      <body style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
+      <body
+        style={{
+          fontFamily: "Poppins, system-ui, sans-serif",
+          lineHeight: "1.8",
+        }}
+      >
         {children}
         <ScrollRestoration />
         <Scripts />
