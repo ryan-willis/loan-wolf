@@ -34,13 +34,18 @@ export function getPaymentIntervalString(interval: PaymentInterval): string {
 }
 
 export interface ILoan {
-  originalAmount: number;
+  name: string;
+  publicId: string;
+  amount: number;
   interestRate: number;
   term: number;
-  currentAmount: number;
+  currentAmount?: number;
+  startAt: number;
 }
 
 export interface IPayment {
-  date?: number;
+  id: string;
+  paidAt: number;
+  installment?: number;
   amount: number;
 }

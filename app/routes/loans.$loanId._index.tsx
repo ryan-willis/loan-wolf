@@ -3,6 +3,9 @@ import { useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { formatMoney } from "~/utils/money";
 import { Loan } from "loanjs";
+import { PaymentHistoryTable } from "~/comps/payment-history-table";
+import { usePaymentHistory } from "~/hooks/use-payment-history";
+import { formatDate } from "~/utils/date";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const loans = await db.loan.findMany({
@@ -16,6 +19,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       interestRate: true,
       term: true,
       startAt: true,
+      payments: true,
     },
   });
   if (loans.length == 0) {
@@ -28,17 +32,17 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 
 export default function LoanRoute() {
-  const loan = useLoaderData<typeof loader>();
-  const data = Loan(loan.amount, loan.term, loan.interestRate * 100, "annuity");
-  const start = new Date(loan.startAt);
-  const yr = start.getUTCFullYear();
-  const mo = start.toLocaleString("default", {
-    month: "long",
-    timeZone: "UTC",
-  });
-  const da = start.toLocaleString("default", {
-    day: "numeric",
-    timeZone: "UTC",
+  const loaderData = useLoaderData<typeof loader>();
+  const data = Loan(
+    loaderData.amount,
+    loaderData.term,
+    loaderData.interestRate * 100,
+    "annuity"
+  );
+  const start = new Date(loaderData.startAt);
+  const { payments, loan } = usePaymentHistory({
+    loan: loaderData,
+    payments: loaderData.payments,
   });
   return (
     <div>
@@ -51,7 +55,11 @@ export default function LoanRoute() {
             <td>{loan.name}</td>
           </tr>
           <tr>
-            <th>Amount</th>
+            <th>Original Amount</th>
+            <td>{formatMoney(loaderData.amount)}</td>
+          </tr>
+          <tr>
+            <th>Current Amount</th>
             <td>{formatMoney(loan.amount)}</td>
           </tr>
           <tr>
@@ -59,17 +67,20 @@ export default function LoanRoute() {
             <td>{Number(loan.interestRate * 100).toFixed(3)}%</td>
           </tr>
           <tr>
+            <th>Total Interest Paid</th>
+            <td>{formatMoney(loan.totalInterest)}</td>
+          </tr>
+          <tr>
             <th>Term</th>
             <td>{loan.term} months</td>
           </tr>
           <tr>
             <th>Started</th>
-            <td>
-              {mo} {da}, {yr}
-            </td>
+            <td>{formatDate(loaderData.startAt)}</td>
           </tr>
         </tbody>
       </table>
+      <PaymentHistoryTable payments={payments} />
       <h3>Amortization</h3>
       <table border={1} cellPadding={8}>
         <thead>

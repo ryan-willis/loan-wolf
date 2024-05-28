@@ -1,12 +1,14 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
-import { formatMoney, getPrincipalInterestSpread } from "~/utils/money";
+import { formatMoney } from "~/utils/money";
 import { Loan } from "loanjs";
 import { commitSession, getSession } from "~/session";
 import { verifyPassword } from "~/utils/security.server";
 import { useState } from "react";
-import { ILoan } from "~/types";
+import { usePaymentHistory } from "~/hooks/use-payment-history";
+import { PaymentHistoryTable } from "~/comps/payment-history-table";
+import { formatDate } from "~/utils/date";
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const form = await request.formData();
@@ -105,6 +107,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       OR: [{ publicId: params.loanId }, { id: params.loanId }],
     },
     select: {
+      publicId: true,
       name: true,
       amount: true,
       interestRate: true,
@@ -149,45 +152,16 @@ function LoanManageAccessForm() {
 
 export default function LoanManageRoute() {
   const [form, setForm] = useState({ amount: 0.0, date: "", isOpen: false });
-  const loan = useLoaderData<typeof loader>();
-  if (loan.prompt) {
+  const loaderData = useLoaderData<typeof loader>();
+  const { payments, loan } = usePaymentHistory({
+    loan: loaderData,
+    payments: loaderData.payments,
+  });
+  if (loaderData.prompt) {
     return <LoanManageAccessForm />;
   }
   const data = Loan(loan.amount, loan.term, loan.interestRate * 100, "annuity");
   const start = new Date(loan.startAt);
-  const dt = start.toLocaleString("default", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-  const l: ILoan & { totalInterest: number } = {
-    originalAmount: loan.amount,
-    interestRate: loan.interestRate,
-    term: loan.term,
-    currentAmount: loan.amount,
-    totalInterest: 0,
-  };
-  const viewPayments = loan.payments.map((payment) => {
-    const { principal, interest } =
-      payment.installment === 0
-        ? {
-            principal: payment.amount,
-            interest: 0,
-          }
-        : getPrincipalInterestSpread(l, payment);
-    l.currentAmount -= principal;
-    l.totalInterest += interest;
-    return {
-      id: payment.id,
-      principal,
-      interest,
-      total: payment.amount,
-      date: new Date(payment.paidAt),
-      installment: payment.installment,
-      bal: l.currentAmount,
-    };
-  });
   return (
     <div>
       <h1>Manage Loan</h1>
@@ -199,11 +173,11 @@ export default function LoanManageRoute() {
           </tr>
           <tr>
             <th>Original Amount</th>
-            <td>{formatMoney(loan.amount)}</td>
+            <td>{formatMoney(loan.originalAmount)}</td>
           </tr>
           <tr>
             <th>Current Amount</th>
-            <td>{formatMoney(l.currentAmount)}</td>
+            <td>{formatMoney(loan.amount)}</td>
           </tr>
           <tr>
             <th>Interest Rate</th>
@@ -211,7 +185,7 @@ export default function LoanManageRoute() {
           </tr>
           <tr>
             <th>Total Interest Paid</th>
-            <td>{formatMoney(l.totalInterest)}</td>
+            <td>{formatMoney(loan.totalInterest)}</td>
           </tr>
           <tr>
             <th>Term</th>
@@ -219,7 +193,7 @@ export default function LoanManageRoute() {
           </tr>
           <tr>
             <th>Started</th>
-            <td>{dt}</td>
+            <td>{formatDate(start)}</td>
           </tr>
         </tbody>
       </table>
@@ -246,10 +220,11 @@ export default function LoanManageRoute() {
               type="number"
               name="amount"
               step=".01"
-              value={form.amount}
+              value={form.amount || ""}
               onChange={(e) =>
                 setForm({ ...form, amount: Number(e.target.value) })
               }
+              onFocus={(e) => e.target.select()}
             />
           </label>
           <label>
@@ -259,44 +234,10 @@ export default function LoanManageRoute() {
           <button type="submit">Create Payment</button>
         </form>
       )}
-      <table border={1} cellPadding={8}>
-        <thead>
-          <tr>
-            <th>Payment Date</th>
-            <th>Amount</th>
-            <th>Principal</th>
-            <th>Interest</th>
-            <th>Running Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {viewPayments.reverse().map((payment, i) => {
-            return (
-              <tr key={i}>
-                <td>
-                  {payment.date.toLocaleDateString("default", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })}
-                </td>
-                <td>{formatMoney(payment.total)}</td>
-                <td>{formatMoney(payment.principal)}</td>
-                <td>{formatMoney(payment.interest)}</td>
-                <td>{formatMoney(payment.bal)}</td>
-                <td>
-                  <form method="post">
-                    <input type="hidden" name="form" value="remove-payment" />
-                    <input type="hidden" name="payment" value={payment.id} />
-                    <button>Remove</button>
-                  </form>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <PaymentHistoryTable
+        payments={payments}
+        options={{ header: null, manage: true }}
+      />
       <h3>Amortization</h3>
       <table border={1} cellPadding={8}>
         <thead>
