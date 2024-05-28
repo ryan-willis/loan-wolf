@@ -12,6 +12,7 @@
     "start": "remix-serve ./build/server/index.js",
     "premigrate:dev": "npm run build:seed",
     "migrate:dev": "prisma migrate dev && prisma db seed",
+    "prebuild:contained": "npm run build:seed",
     "build:contained": "remix vite:build",
     "prestart:contained": "prisma migrate deploy && prisma db seed",
     "start:contained": "remix-serve ./build/server/index.js"
