@@ -1,6 +1,5 @@
 import { ILoan, IPayment } from "~/types";
-import { formatDate } from "~/utils/date";
-import { formatMoney, getPrincipalInterestSpread } from "~/utils/money";
+import { getPrincipalInterestSpread } from "~/utils/money";
 
 export function usePaymentHistory({
   loan: originalLoan,
@@ -33,12 +32,12 @@ export function usePaymentHistory({
       loan.amount -= principal;
       loan.totalInterest += interest;
       return {
-        date: formatDate(payment.paidAt),
-        dueDate: isPrincipalOnly ? "N/A" : formatDate(paymentDue),
-        amount: formatMoney(payment.amount),
-        principal: formatMoney(principal),
-        interest: formatMoney(interest),
-        remaining: formatMoney(loan.amount),
+        date: payment.paidAt,
+        dueDate: isPrincipalOnly ? "N/A" : paymentDue,
+        amount: payment.amount,
+        principal: principal,
+        interest: interest,
+        remaining: loan.amount,
         id: payment.id,
       };
     })

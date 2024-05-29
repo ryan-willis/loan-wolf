@@ -1,4 +1,6 @@
 import { usePaymentHistory } from "~/hooks/use-payment-history";
+import { formatDate } from "~/utils/date";
+import { formatMoney } from "~/utils/money";
 
 interface PaymentHistoryTableProps {
   payments: ReturnType<typeof usePaymentHistory>["payments"];
@@ -37,12 +39,12 @@ export function PaymentHistoryTable({
           )}
           {payments.map((payment) => (
             <tr key={payment.id}>
-              <td>{payment.date}</td>
-              <td>{payment.dueDate}</td>
-              <td>{payment.amount}</td>
-              <td>{payment.principal}</td>
-              <td>{payment.interest}</td>
-              <td>{payment.remaining}</td>
+              <td>{formatDate(payment.date)}</td>
+              <td>{formatDate(payment.dueDate)}</td>
+              <td>{formatMoney(payment.amount)}</td>
+              <td>{formatMoney(payment.principal)}</td>
+              <td>{formatMoney(payment.interest)}</td>
+              <td>{formatMoney(payment.remaining)}</td>
               {manage && (
                 <td>
                   <form method="post">

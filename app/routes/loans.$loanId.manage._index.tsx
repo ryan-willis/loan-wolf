@@ -1,14 +1,14 @@
 import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
-import { formatMoney } from "~/utils/money";
-import { Loan } from "loanjs";
 import { commitSession, getSession } from "~/session";
 import { verifyPassword } from "~/utils/security.server";
 import { useState } from "react";
 import { usePaymentHistory } from "~/hooks/use-payment-history";
 import { PaymentHistoryTable } from "~/comps/payment-history-table";
-import { formatDate } from "~/utils/date";
+import { AmortizationTable } from "~/comps/amortization-table";
+import { useAmortize } from "~/hooks/use-amortize";
+import { LoanSummary } from "~/comps/loan-summary";
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const form = await request.formData();
@@ -157,46 +157,21 @@ export default function LoanManageRoute() {
     loan: loaderData,
     payments: loaderData.payments,
   });
+  const { payments: amortizationPayments, total } = useAmortize({
+    loan,
+    payments,
+  });
   if (loaderData.prompt) {
     return <LoanManageAccessForm />;
   }
-  const data = Loan(loan.amount, loan.term, loan.interestRate * 100, "annuity");
-  const start = new Date(loan.startAt);
   return (
     <div>
-      <h1>Manage Loan</h1>
-      <table border={1} cellPadding={8}>
-        <tbody>
-          <tr>
-            <th>Loan Name</th>
-            <td>{loan.name}</td>
-          </tr>
-          <tr>
-            <th>Original Amount</th>
-            <td>{formatMoney(loan.originalAmount)}</td>
-          </tr>
-          <tr>
-            <th>Current Amount</th>
-            <td>{formatMoney(loan.amount)}</td>
-          </tr>
-          <tr>
-            <th>Interest Rate</th>
-            <td>{Number(loan.interestRate * 100).toFixed(3)}%</td>
-          </tr>
-          <tr>
-            <th>Total Interest Paid</th>
-            <td>{formatMoney(loan.totalInterest)}</td>
-          </tr>
-          <tr>
-            <th>Term</th>
-            <td>{loan.term} months</td>
-          </tr>
-          <tr>
-            <th>Started</th>
-            <td>{formatDate(start)}</td>
-          </tr>
-        </tbody>
-      </table>
+      <h2>Manage Loan</h2>
+      <LoanSummary
+        loan={loan}
+        totalInterest={loan.totalInterest}
+        originalAmount={loaderData.amount}
+      />
       <h3>Payments</h3>
       {!form.isOpen ? (
         <button onClick={() => setForm({ ...form, isOpen: true })}>
@@ -238,50 +213,7 @@ export default function LoanManageRoute() {
         payments={payments}
         options={{ header: null, manage: true }}
       />
-      <h3>Amortization</h3>
-      <table border={1} cellPadding={8}>
-        <thead>
-          <tr>
-            <th>Payment Date</th>
-            <th>Principal</th>
-            <th>Interest</th>
-            <th>Total Payment</th>
-            <th>Remaining Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.installments.map((inst, i) => {
-            const paymentDate = new Date(start);
-            paymentDate.setUTCMonth(
-              start.getUTCMonth() + i + 1,
-              start.getUTCDate()
-            );
-            return (
-              <tr key={i}>
-                <td>
-                  {paymentDate.toLocaleDateString("default", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                    timeZone: "UTC",
-                  })}
-                </td>
-                <td>{formatMoney(inst.capital)}</td>
-                <td>{formatMoney(inst.interest)}</td>
-                <td>{formatMoney(inst.installment)}</td>
-                <td>{formatMoney(inst.remain)}</td>
-              </tr>
-            );
-          })}
-          <tr>
-            <th>Total</th>
-            <th>{formatMoney(data.capitalSum)}</th>
-            <th>{formatMoney(data.interestSum)}</th>
-            <th>{formatMoney(data.sum)}</th>
-            <th>{formatMoney(0)}</th>
-          </tr>
-        </tbody>
-      </table>
+      <AmortizationTable payments={amortizationPayments} total={total} />
     </div>
   );
 }

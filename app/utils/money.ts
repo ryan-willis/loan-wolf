@@ -26,5 +26,5 @@ export function getMonthlyPayment(
   const multiplier = loan.interestRate / 12;
   const numerator = loan.amount * multiplier;
   const denominator = 1 - Math.pow(1 + multiplier, -loan.term); // ain't math fun?
-  return numerator / denominator;
+  return Math.round((100 * numerator) / denominator) / 100;
 }
