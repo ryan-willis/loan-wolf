@@ -16,7 +16,9 @@
     "prebuild:contained": "npm run build:seed",
     "build:contained": "remix vite:build",
     "prestart:contained": "prisma migrate deploy && prisma db seed",
-    "start:contained": "remix-serve ./build/server/index.js"
+    "start:contained": "remix-serve ./build/server/index.js",
+    "build:docker": "docker compose build",
+    "publish:docker": "docker push ghcr.io/ryan-willis/loan-wolf:latest"
   },
   "dependencies": {
     "@prisma/client": "^5.14.0",

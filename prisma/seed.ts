@@ -29,6 +29,7 @@ const SAMPLE_LOAN_PUBLIC_ID = "sample-loan";
       loanId: loan.id,
       amount: 856.07,
       paidAt: new Date("2021-02-21").getTime(),
+      installment: 1,
     },
   });
 })();
