@@ -4,7 +4,7 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useActionData, useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { commitSession, getSession } from "~/session";
 import { verifyPassword } from "~/utils/security.server";
@@ -18,6 +18,7 @@ import {
   Button,
   Checkbox,
   CopyButton,
+  Fieldset,
   Flex,
   Grid,
   Modal,
@@ -81,7 +82,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
     const installment = principalOnly
       ? 0
       : loan.payments.filter((p) => p.installment !== 0).length + 1;
-    await db.payment.create({
+    const pmt = await db.payment.create({
       data: {
         loanId: loan.id,
         amount,
@@ -89,6 +90,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
         installment,
       },
     });
+    return json({ ...loan, lastAdded: pmt.id, prompt: false, message: "" });
     return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
   }
   // } else if (_action === "access") {
@@ -104,6 +106,18 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
     managePassword
   );
   if (!passwordMatch) {
+    return json(
+      {
+        ...loan,
+        prompt: true,
+        message: "Invalid password",
+        lastAdded: "",
+      },
+      {
+        status: 401,
+        statusText: "Unauthorized",
+      }
+    );
     return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
   }
   const session = await getSession(request.headers.get("Cookie"));
@@ -156,15 +170,37 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return json({ ...loan, prompt, origin });
 };
 
-function LoanManageAccessForm() {
+function LoanManageAccessForm({ message }: { message?: string }) {
   return (
     <form method="post">
-      <input type="hidden" name="form" value="access" />
-      <label>
-        Secret Password:
-        <input type="password" name="password" />
-      </label>
-      <button type="submit">Access Loan</button>
+      <Fieldset legend="Access Loan" pt="lg">
+        <input type="hidden" name="form" value="access" />
+        <Grid>
+          <Grid.Col span={{ base: 12, sm: 6 }}>
+            <TextInput
+              type="password"
+              name="password"
+              label="Secret Password"
+              error={message}
+              required
+            />
+          </Grid.Col>
+        </Grid>
+      </Fieldset>
+      <Space h="lg" />
+      <Flex justify="end">
+        <Button
+          type="submit"
+          variant="gradient"
+          gradient={{
+            from: "blue",
+            to: "teal",
+            deg: 45,
+          }}
+        >
+          Access Loan
+        </Button>
+      </Flex>
     </form>
   );
 }
@@ -175,6 +211,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 export default function LoanManageRoute() {
   const [form, setForm] = useState({ amount: 0.0, date: "", isOpen: false });
   const loaderData = useLoaderData<typeof loader>();
+  const actionData = useActionData<typeof action>();
   const { payments, loan } = usePaymentHistory({
     loan: loaderData,
     payments: loaderData.payments,
@@ -184,7 +221,7 @@ export default function LoanManageRoute() {
     payments,
   });
   if (loaderData.prompt) {
-    return <LoanManageAccessForm />;
+    return <LoanManageAccessForm message={actionData?.message} />;
   }
 
   return (
@@ -233,7 +270,14 @@ export default function LoanManageRoute() {
         </Button>
       </Flex>
       <Space h="xs" />
-      <PaymentHistoryTable payments={payments} />
+      <PaymentHistoryTable
+        payments={payments}
+        options={{
+          manage: true,
+          header: "Payment History",
+        }}
+        lastAdded={actionData?.lastAdded}
+      />
       <Space h="xs" />
       <AmortizationTable payments={amortizationPayments} total={total} />
       <Modal

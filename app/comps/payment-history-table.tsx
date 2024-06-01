@@ -1,4 +1,5 @@
 import { Fieldset, Table, Title } from "@mantine/core";
+import { useEffect, useState } from "react";
 import { usePaymentHistory } from "~/hooks/use-payment-history";
 import { formatDate } from "~/utils/date";
 import { formatMoney } from "~/utils/money";
@@ -9,18 +10,25 @@ interface PaymentHistoryTableProps {
     header: string | null;
     manage: boolean;
   };
+  lastAdded?: string;
 }
 
 export function PaymentHistoryTable({
   payments,
   options: { header, manage } = { header: "Payment History", manage: false },
+  lastAdded,
 }: PaymentHistoryTableProps) {
+  const [flashed, setFlashed] = useState(false);
+  useEffect(() => {
+    setFlashed(true);
+  }, []);
+
   return (
     <Fieldset pt="lg">
       <Title order={4} mb="md">
         {header}
       </Title>
-      <Table.ScrollContainer minWidth={600}>
+      <Table.ScrollContainer minWidth={payments.length > 0 ? 600 : 0}>
         <Table withColumnBorders>
           {payments.length > 0 && (
             <Table.Thead>
@@ -43,7 +51,16 @@ export function PaymentHistoryTable({
               </Table.Tr>
             )}
             {payments.map((payment) => (
-              <Table.Tr key={payment.id}>
+              <Table.Tr
+                key={payment.id}
+                style={{
+                  transition: "background-color .7s",
+                  backgroundColor:
+                    lastAdded === payment.id && !flashed
+                      ? "color-mix(in srgb, var(--mantine-color-teal-9) 60%, transparent)"
+                      : "inherit",
+                }}
+              >
                 <Table.Td>{formatDate(payment.date)}</Table.Td>
                 <Table.Td>{formatDate(payment.dueDate)}</Table.Td>
                 <Table.Td>{formatMoney(payment.amount)}</Table.Td>
