@@ -1,4 +1,4 @@
-import { AppShell, Flex, Anchor, Text } from "@mantine/core";
+import { AppShell, Flex, Anchor, Text, Container } from "@mantine/core";
 import { MetaFunction, Outlet } from "@remix-run/react";
 
 import { Logo } from "~/comps/logo";
@@ -36,7 +36,9 @@ export default function LoansRoute() {
         </Anchor>
       </AppShell.Header>
       <AppShell.Main>
-        <Outlet />
+        <Container size="sm" p={0}>
+          <Outlet />
+        </Container>
       </AppShell.Main>
     </AppShell>
   );
