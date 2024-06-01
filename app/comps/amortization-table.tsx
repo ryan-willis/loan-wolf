@@ -1,3 +1,13 @@
+import {
+  Button,
+  Collapse,
+  Fieldset,
+  Flex,
+  Space,
+  Table,
+  Title,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useAmortize } from "~/hooks/use-amortize";
 import { formatDate } from "~/utils/date";
 import { formatMoney } from "~/utils/money";
@@ -8,38 +18,58 @@ interface AmortizationTableProps {
 }
 
 export function AmortizationTable({ payments, total }: AmortizationTableProps) {
+  const [opened, { toggle }] = useDisclosure(false);
   return (
-    <>
-      <h3>Amortization Schedule</h3>
-      <table border={1} cellPadding={8}>
-        <thead>
-          <tr>
-            <th>Payment Date</th>
-            <th>Principal</th>
-            <th>Interest</th>
-            <th>Total</th>
-            <th>Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((payment, i) => (
-            <tr key={i}>
-              <td>{formatDate(payment.date)}</td>
-              <td>{formatMoney(payment.principal)}</td>
-              <td>{formatMoney(payment.interest)}</td>
-              <td>{formatMoney(payment.total)}</td>
-              <td>{formatMoney(payment.remaining)}</td>
-            </tr>
-          ))}
-          <tr>
-            <td>Total</td>
-            <td>{formatMoney(total.principal)}</td>
-            <td>{formatMoney(total.interest)}</td>
-            <td>{formatMoney(total.total)}</td>
-            <td>{formatMoney(total.remaining)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    <Fieldset>
+      <Flex justify="space-between">
+        <Title order={4}>Amortization Schedule</Title>
+        <Button
+          onClick={toggle}
+          size="xs"
+          variant="gradient"
+          gradient={{
+            from: "teal",
+            to: "blue",
+            deg: 45,
+          }}
+        >
+          {opened ? "Hide" : "Show"}
+        </Button>
+      </Flex>
+      <Collapse in={opened}>
+        <Space h="xs" />
+        <Table.ScrollContainer minWidth={600}>
+          <Table withColumnBorders>
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th>Payment Date</Table.Th>
+                <Table.Th>Principal</Table.Th>
+                <Table.Th>Interest</Table.Th>
+                <Table.Th>Total</Table.Th>
+                <Table.Th>Balance</Table.Th>
+              </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
+              {payments.map((payment, i) => (
+                <Table.Tr key={i}>
+                  <Table.Td>{formatDate(payment.date)}</Table.Td>
+                  <Table.Td>{formatMoney(payment.principal)}</Table.Td>
+                  <Table.Td>{formatMoney(payment.interest)}</Table.Td>
+                  <Table.Td>{formatMoney(payment.total)}</Table.Td>
+                  <Table.Td>{formatMoney(payment.remaining)}</Table.Td>
+                </Table.Tr>
+              ))}
+              <Table.Tr>
+                <Table.Th>Total</Table.Th>
+                <Table.Th>{formatMoney(total.principal)}</Table.Th>
+                <Table.Th>{formatMoney(total.interest)}</Table.Th>
+                <Table.Th>{formatMoney(total.total)}</Table.Th>
+                <Table.Th>{formatMoney(total.remaining)}</Table.Th>
+              </Table.Tr>
+            </Table.Tbody>
+          </Table>
+        </Table.ScrollContainer>
+      </Collapse>
+    </Fieldset>
   );
 }

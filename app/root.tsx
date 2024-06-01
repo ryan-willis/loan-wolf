@@ -1,3 +1,6 @@
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+
 import {
   Links,
   Meta,
@@ -5,9 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-
-// import logo from "~/assets/logo.svg";
-import logo from "~/assets/head.svg";
+import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -29,14 +30,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
         <Meta />
         <Links />
+        <ColorSchemeScript defaultColorScheme="dark" />
       </head>
-      <body
-        style={{
-          fontFamily: "Poppins, system-ui, sans-serif",
-          lineHeight: "1.8",
-        }}
-      >
-        {children}
+      <body>
+        <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -47,17 +44,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "start",
-          alignItems: "center",
-          gap: ".5rem",
-        }}
-      >
-        <img width={48} height={48} src={logo} alt="Loan Wolf Logo" />
-        <h1 style={{ fontSize: "1.75rem" }}>LOAN WOLF</h1>
-      </div>
       <Outlet />
     </>
   );

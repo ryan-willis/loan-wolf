@@ -9,6 +9,19 @@ import { PaymentHistoryTable } from "~/comps/payment-history-table";
 import { AmortizationTable } from "~/comps/amortization-table";
 import { useAmortize } from "~/hooks/use-amortize";
 import { LoanSummary } from "~/comps/loan-summary";
+import {
+  Button,
+  Checkbox,
+  CopyButton,
+  Flex,
+  Grid,
+  Modal,
+  Space,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const form = await request.formData();
@@ -58,7 +71,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
 
   if (_action === "add-payment") {
     const amount = Number(form.get("amount"));
-    const paidAt = new Date(form.get("date") + "Z").getTime();
+    const paidAt = new Date(String(form.get("payment_date"))).getTime();
     const principalOnly = form.get("principal") === "on";
     const installment = principalOnly
       ? 0
@@ -134,7 +147,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     session.get("loans")?.length == 0 ||
     !session.get("loans")?.includes(params.loanId!);
 
-  return json({ ...loan, prompt });
+  const { origin } = new URL(request.url);
+  return json({ ...loan, prompt, origin });
 };
 
 function LoanManageAccessForm() {
@@ -164,56 +178,113 @@ export default function LoanManageRoute() {
   if (loaderData.prompt) {
     return <LoanManageAccessForm />;
   }
+
   return (
-    <div>
-      <h2>Manage Loan</h2>
+    <>
+      <Flex justify="space-between">
+        <Title order={2} mb="md">
+          Manage Loan
+        </Title>
+        <CopyButton
+          value={`${loaderData.origin}/loans/${loaderData.publicId}`}
+          timeout={5000}
+        >
+          {({ copied, copy }) => (
+            <Button
+              onClick={copy}
+              variant="gradient"
+              gradient={{
+                from: copied ? "violet" : "teal",
+                to: copied ? "indigo" : "blue",
+                deg: 45,
+              }}
+            >
+              {copied ? "Copied!" : "Copy Link"}
+            </Button>
+          )}
+        </CopyButton>
+      </Flex>
       <LoanSummary
         loan={loan}
         totalInterest={loan.totalInterest}
         originalAmount={loaderData.amount}
       />
-      <h3>Payments</h3>
-      {!form.isOpen ? (
-        <button onClick={() => setForm({ ...form, isOpen: true })}>
-          Add Payment
-        </button>
-      ) : (
+      <Space h="xs" />
+      <Button
+        onClick={() => setForm({ ...form, isOpen: true })}
+        variant="gradient"
+        gradient={{
+          from: "blue",
+          to: "teal",
+          deg: 45,
+        }}
+      >
+        Add Payment
+      </Button>
+      <Space h="xs" />
+      <PaymentHistoryTable payments={payments} />
+      <Space h="xs" />
+      <AmortizationTable payments={amortizationPayments} total={total} />
+      <Modal
+        opened={form.isOpen}
+        onClose={() => setForm({ ...form, isOpen: false })}
+        title="Create Payment"
+      >
         <form method="post">
           <input type="hidden" name="form" value="add-payment" />
-          <label>
-            Payment Date:
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-          </label>
-          <label>
-            Amount:
-            <input
-              type="number"
-              name="amount"
-              step=".01"
-              value={form.amount || ""}
-              onChange={(e) =>
-                setForm({ ...form, amount: Number(e.target.value) })
-              }
-              onFocus={(e) => e.target.select()}
-            />
-          </label>
-          <label>
-            Principal Only
-            <input type="checkbox" name="principal" />
-          </label>
-          <button type="submit">Create Payment</button>
+          <Grid>
+            <Grid.Col span={{ base: 6, sm: 6, md: 6 }}>
+              <DateInput
+                label="Payment Date"
+                name="payment_date"
+                required
+                onChange={(v) =>
+                  setForm({ ...form, date: v?.toUTCString() || "" })
+                }
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, sm: 6, md: 6 }}>
+              <TextInput
+                label="Amount"
+                name="amount"
+                type="number"
+                required
+                step=".01"
+                onFocus={(e) => e.target.select()}
+                onChange={(e) =>
+                  setForm({ ...form, amount: Number(e.target.value) })
+                }
+                value={form.amount || ""}
+                leftSection={<Text size="14">$</Text>}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12 }}>
+              <Checkbox label="Principal Only" name="principal" />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12 }}>
+              <Flex gap="sm">
+                <Button
+                  type="submit"
+                  variant="gradient"
+                  gradient={{
+                    from: "blue",
+                    to: "teal",
+                    deg: 45,
+                  }}
+                >
+                  Create Payment
+                </Button>
+                <Button
+                  onClick={() => setForm({ ...form, isOpen: false })}
+                  variant="outline"
+                >
+                  Cancel
+                </Button>
+              </Flex>
+            </Grid.Col>
+          </Grid>
         </form>
-      )}
-      <PaymentHistoryTable
-        payments={payments}
-        options={{ header: null, manage: true }}
-      />
-      <AmortizationTable payments={amortizationPayments} total={total} />
-    </div>
+      </Modal>
+    </>
   );
 }

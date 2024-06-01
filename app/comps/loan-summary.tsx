@@ -1,3 +1,4 @@
+import { Button, Fieldset, Flex, Table, Title } from "@mantine/core";
 import { ILoan } from "~/types";
 import { formatDate } from "~/utils/date";
 import { formatMoney } from "~/utils/money";
@@ -14,41 +15,55 @@ export function LoanSummary({
   showManage?: boolean;
 }) {
   return (
-    <>
-      <h3>Loan Summary</h3>
-      {showManage && <a href={`/loans/${loan.publicId}/manage`}>Manage Loan</a>}
-      <table border={1} cellPadding={8}>
-        <tbody>
-          <tr>
-            <th>Loan Name</th>
-            <td>{loan.name}</td>
-          </tr>
-          <tr>
-            <th>Original Amount</th>
-            <td>{formatMoney(originalAmount)}</td>
-          </tr>
-          <tr>
-            <th>Current Amount</th>
-            <td>{formatMoney(loan.amount)}</td>
-          </tr>
-          <tr>
-            <th>Interest Rate</th>
-            <td>{Number(loan.interestRate * 100).toFixed(3)}%</td>
-          </tr>
-          <tr>
-            <th>Interest Paid To Date</th>
-            <td>{formatMoney(totalInterest)}</td>
-          </tr>
-          <tr>
-            <th>Term</th>
-            <td>{loan.term} months</td>
-          </tr>
-          <tr>
-            <th>Started</th>
-            <td>{formatDate(loan.startAt)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    <Fieldset>
+      <Flex justify="space-between">
+        <Title order={4}>Loan Summary</Title>
+        {showManage && loan.publicId !== "sample-loan" && (
+          <Button
+            component="a"
+            href={`/loans/${loan.publicId}/manage`}
+            variant="gradient"
+            gradient={{ from: "blue", to: "teal", deg: 45 }}
+          >
+            Manage Loan
+          </Button>
+        )}
+      </Flex>
+      <Table withColumnBorders layout="auto">
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Td>{loan.name}</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Original Amount</Table.Th>
+            <Table.Td>{formatMoney(originalAmount)}</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Current Amount</Table.Th>
+            <Table.Td>{formatMoney(loan.amount)}</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Interest Rate</Table.Th>
+            <Table.Td>{Number(loan.interestRate * 100).toFixed(3)}%</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            {/* nifty lil hack */}
+            <Table.Th style={{ width: 5, whiteSpace: "nowrap" }}>
+              Interest Paid To Date
+            </Table.Th>
+            <Table.Td>{formatMoney(totalInterest)}</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Term</Table.Th>
+            <Table.Td>{loan.term} months</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Started</Table.Th>
+            <Table.Td>{formatDate(loan.startAt)}</Table.Td>
+          </Table.Tr>
+        </Table.Thead>
+      </Table>
+    </Fieldset>
   );
 }

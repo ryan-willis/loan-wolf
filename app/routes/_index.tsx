@@ -1,4 +1,7 @@
+import { Text, Flex, Button } from "@mantine/core";
 import type { MetaFunction } from "@remix-run/node";
+
+import { Logo } from "~/comps/logo";
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,10 +15,57 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <div>
-      <h1>Welcome to Loan Wolf</h1>
-      <a href="/loans/sample-loan">View Sample Loan</a>
-      <a href="/loans">Go to Loans</a>
-    </div>
+    <Flex direction="column" align="center" justify="center" gap="md">
+      <Logo h={128} w={128} />
+      <Text
+        size="5rem"
+        fw={700}
+        variant="gradient"
+        gradient={{
+          from: "teal",
+          to: "blue",
+          deg: 45,
+        }}
+      >
+        LOAN WOLF
+      </Text>
+      <Text
+        size="xl"
+        fw={500}
+        variant="gradient"
+        gradient={{
+          from: "blue",
+          to: "teal",
+          deg: 45,
+        }}
+      >
+        Track loan payments like you&apos;re on the hunt!
+      </Text>
+      <Button
+        component="a"
+        href="/loans/sample-loan"
+        variant="gradient"
+        gradient={{
+          from: "teal",
+          to: "blue",
+          deg: 45,
+        }}
+      >
+        View Sample Loan
+      </Button>
+      - or -
+      <Button
+        component="a"
+        href="/loans/create"
+        variant="gradient"
+        gradient={{
+          from: "blue",
+          to: "teal",
+          deg: 45,
+        }}
+      >
+        Create a Loan
+      </Button>
+    </Flex>
   );
 }

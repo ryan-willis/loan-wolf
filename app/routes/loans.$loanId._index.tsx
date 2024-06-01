@@ -6,6 +6,7 @@ import { usePaymentHistory } from "~/hooks/use-payment-history";
 import { AmortizationTable } from "~/comps/amortization-table";
 import { useAmortize } from "~/hooks/use-amortize";
 import { LoanSummary } from "~/comps/loan-summary";
+import { Space } from "@mantine/core";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   const loans = await db.loan.findMany({
@@ -42,16 +43,17 @@ export default function LoanRoute() {
     payments,
   });
   return (
-    <div>
-      <h2>Loan Details</h2>
+    <>
       <LoanSummary
         loan={loan}
         totalInterest={loan.totalInterest}
         originalAmount={loaderData.amount}
         showManage
       />
+      <Space h="xs" />
       <PaymentHistoryTable payments={payments} />
+      <Space h="xs" />
       <AmortizationTable payments={amortizationPayments} total={total} />
-    </div>
+    </>
   );
 }

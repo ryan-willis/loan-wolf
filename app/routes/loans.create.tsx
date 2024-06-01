@@ -1,3 +1,16 @@
+import {
+  Button,
+  Container,
+  Fieldset,
+  Flex,
+  Grid,
+  NativeSelect,
+  PasswordInput,
+  Space,
+  TextInput,
+  Text,
+} from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import ShortUniqueId from "short-unique-id";
 import { commitSession, getSession } from "~/session";
@@ -10,7 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const amount = Number(form.get("principal_amount"));
   const interestRate = Number(form.get("interest_rate")) / 100;
   const term = Number(form.get("num_installments"));
-  const startAt = new Date(form.get("start_date") + "Z").getTime();
+  const startAt = new Date(String(form.get("start_date"))).getTime();
   const paymentInterval = Number(form.get("payment_interval"));
   const managePasswordRaw = String(form.get("loan_name"));
   const interestCompounds = paymentInterval;
@@ -44,56 +57,85 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function CreateLoanRoute() {
   return (
-    <div>
+    <Container>
       <h1>Create a Loan</h1>
-      <form
-        method="post"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "320px",
-          gap: "1rem",
-        }}
-      >
-        <label>
-          Name:
-          <input type="text" name="loan_name" />
-        </label>
-        <label>
-          Loan Amount:
-          <input type="number" name="principal_amount" step=".01" />
-        </label>
-        <label>
-          Interest Rate:
-          <input type="number" name="interest_rate" step=".001" />
-        </label>
-        <label>
-          Term:
-          <input type="number" name="num_installments" />
-        </label>
-        <label>
-          Start Date:
-          <input type="date" name="start_date" />
-        </label>
-        <label>
-          Management Password:
-          <input type="password" name="manage_password" />
-        </label>
-        <label>
-          Payment Interval:
-          <select name="payment_interval">
-            <option value="1">Daily</option>
-            <option value="2">Weekly</option>
-            <option value="3">Bi-weekly</option>
-            <option value="4">Semi-monthly</option>
-            <option value="5">Monthly</option>
-            <option value="6">Quarterly</option>
-            <option value="7">Semi-annually</option>
-            <option value="8">Annually</option>
-          </select>
-        </label>
-        <button type="submit">Create Loan</button>
+      <form method="post">
+        <Fieldset legend="Loan Details">
+          <Grid>
+            <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
+              <TextInput label="Name" name="loan_name" required />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 6, md: 0 }} p={0} />
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <TextInput
+                label="Loan Amount"
+                name="principal_amount"
+                type="number"
+                required
+                step=".01"
+                leftSection={<Text size="14">$</Text>}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <TextInput
+                label="Interest Rate"
+                name="interest_rate"
+                type="number"
+                required
+                step=".001"
+                rightSection={<Text size="14">%</Text>}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <TextInput
+                label="Term"
+                name="num_installments"
+                type="number"
+                required
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <DateInput label="Start Date" name="start_date" required />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <NativeSelect
+                label="Payment Interval"
+                name="payment_interval"
+                data={[
+                  { value: "1", label: "Daily" },
+                  { value: "2", label: "Weekly" },
+                  { value: "3", label: "Bi-weekly" },
+                  { value: "4", label: "Semi-monthly" },
+                  { value: "5", label: "Monthly" },
+                  { value: "6", label: "Quarterly" },
+                  { value: "7", label: "Semi-annually" },
+                  { value: "8", label: "Annually" },
+                ]}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 6, md: 4 }}>
+              <PasswordInput
+                label="Management Password"
+                name="manage_password"
+              />
+            </Grid.Col>
+          </Grid>
+        </Fieldset>
+        <Space h="lg" />
+        <Flex justify="end">
+          <Button
+            type="submit"
+            variant="gradient"
+            gradient={{
+              from: "blue",
+              to: "teal",
+              deg: 45,
+            }}
+          >
+            Create Loan
+          </Button>
+        </Flex>
       </form>
-    </div>
+    </Container>
   );
 }
