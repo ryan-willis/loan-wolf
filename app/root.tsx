@@ -7,10 +7,23 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useRouteLoaderData,
 } from "@remix-run/react";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { HeaderScripts, HeaderTags } from "./config";
+
+export const loader = async () => {
+  const VITE_HEADER_TAGS = process.env.VITE_HEADER_TAGS || "";
+  try {
+    const data: HeaderTags = JSON.parse(VITE_HEADER_TAGS);
+    return { ...data };
+  } catch {
+    return { scripts: [] };
+  }
+};
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data: HeaderTags = useRouteLoaderData("root")!;
   return (
     <html lang="en">
       <head>
@@ -34,6 +47,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
         <ColorSchemeScript defaultColorScheme="dark" />
+        <HeaderScripts data={data} />
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
