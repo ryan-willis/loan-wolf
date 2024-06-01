@@ -16,13 +16,14 @@ export function LoanSummary({
 }) {
   return (
     <Fieldset>
-      <Flex justify="space-between">
+      <Flex justify="space-between" mb="sm">
         <Title order={4}>Loan Summary</Title>
         {showManage && loan.publicId !== "sample-loan" && (
           <Button
             component="a"
             href={`/loans/${loan.publicId}/manage`}
             variant="gradient"
+            size="compact-sm"
             gradient={{ from: "blue", to: "teal", deg: 45 }}
           >
             Manage Loan

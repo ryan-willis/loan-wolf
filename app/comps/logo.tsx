@@ -16,8 +16,8 @@ export function Logo({
     >
       <defs>
         <linearGradient id="teal-blue" gradientTransform="rotate(45)">
-          <stop offset="0%" stopColor="var(--mantine-color-blue-9)" />
-          <stop offset="100%" stopColor="var(--mantine-color-teal-9)" />
+          <stop offset="0%" stopColor="var(--mantine-color-blue-filled)" />
+          <stop offset="100%" stopColor="var(--mantine-color-teal-filled)" />
         </linearGradient>
       </defs>
       <path

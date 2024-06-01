@@ -1,4 +1,4 @@
-import { AppShell, Flex, Container, Anchor, Text } from "@mantine/core";
+import { AppShell, Flex, Anchor, Text } from "@mantine/core";
 import { MetaFunction, Outlet } from "@remix-run/react";
 
 import { Logo } from "~/comps/logo";
@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoansRoute() {
   return (
-    <AppShell header={{ height: 60 }} padding="md">
+    <AppShell header={{ height: 60 }} withBorder={false}>
       <AppShell.Header p="sm" h="60">
         <Anchor href="/" underline="never" c="white">
           <Flex align="center" gap="sm" justify="start">
@@ -36,9 +36,7 @@ export default function LoansRoute() {
         </Anchor>
       </AppShell.Header>
       <AppShell.Main>
-        <Container>
-          <Outlet />
-        </Container>
+        <Outlet />
       </AppShell.Main>
     </AppShell>
   );

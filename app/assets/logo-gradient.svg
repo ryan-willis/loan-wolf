@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="teal_blue" gradient-transform="rotate(45)">
+    <linearGradient id="teal_blue" gradientTransform="rotate(45)">
       <stop offset="0%" stop-color="#1864ab" />
       <stop offset="100%" stop-color="#087f5b" />
     </linearGradient>

@@ -35,7 +35,7 @@ export function PaymentHistoryTable({
           <Table.Tbody>
             {payments.length === 0 && (
               <Table.Tr>
-                <Table.Td colSpan={6} align="center" pt="xl">
+                <Table.Td colSpan={6} pt="xl">
                   No payments have been added yet
                 </Table.Td>
               </Table.Tr>

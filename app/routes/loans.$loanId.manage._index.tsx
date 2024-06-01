@@ -181,7 +181,7 @@ export default function LoanManageRoute() {
 
   return (
     <>
-      <Flex justify="space-between">
+      <Flex justify="space-between" p="xs">
         <Title order={2} mb="md">
           Manage Loan
         </Title>
@@ -193,9 +193,10 @@ export default function LoanManageRoute() {
             <Button
               onClick={copy}
               variant="gradient"
+              size="sm"
               gradient={{
-                from: copied ? "violet" : "teal",
-                to: copied ? "indigo" : "blue",
+                from: copied ? "blue" : "teal",
+                to: copied ? "violet" : "blue",
                 deg: 45,
               }}
             >
@@ -210,17 +211,19 @@ export default function LoanManageRoute() {
         originalAmount={loaderData.amount}
       />
       <Space h="xs" />
-      <Button
-        onClick={() => setForm({ ...form, isOpen: true })}
-        variant="gradient"
-        gradient={{
-          from: "blue",
-          to: "teal",
-          deg: 45,
-        }}
-      >
-        Add Payment
-      </Button>
+      <Flex justify="end" p="sm">
+        <Button
+          onClick={() => setForm({ ...form, isOpen: true })}
+          variant="gradient"
+          gradient={{
+            from: "blue",
+            to: "teal",
+            deg: 45,
+          }}
+        >
+          Add Payment
+        </Button>
+      </Flex>
       <Space h="xs" />
       <PaymentHistoryTable payments={payments} />
       <Space h="xs" />
@@ -228,7 +231,7 @@ export default function LoanManageRoute() {
       <Modal
         opened={form.isOpen}
         onClose={() => setForm({ ...form, isOpen: false })}
-        title="Create Payment"
+        title="Add Payment"
       >
         <form method="post">
           <input type="hidden" name="form" value="add-payment" />
@@ -272,7 +275,7 @@ export default function LoanManageRoute() {
                     deg: 45,
                   }}
                 >
-                  Create Payment
+                  Add Payment
                 </Button>
                 <Button
                   onClick={() => setForm({ ...form, isOpen: false })}

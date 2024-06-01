@@ -25,7 +25,7 @@ export function AmortizationTable({ payments, total }: AmortizationTableProps) {
         <Title order={4}>Amortization Schedule</Title>
         <Button
           onClick={toggle}
-          size="xs"
+          size="compact-sm"
           variant="gradient"
           gradient={{
             from: "teal",

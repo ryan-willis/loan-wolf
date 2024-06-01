@@ -8,7 +8,7 @@
     "build": "remix vite:build",
     "build:seed": "esbuild --platform=node --outfile=prisma/seed.js prisma/seed.ts",
     "predev": "npm run prebuild && npm run migrate:dev",
-    "dev": "remix vite:dev",
+    "dev": "remix vite:dev --host",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "premigrate:dev": "npm run build:seed",

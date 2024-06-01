@@ -15,9 +15,10 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   return (
-    <Flex direction="column" align="center" justify="center" gap="md">
+    <Flex direction="column" align="center" justify="center" gap="md" p="sm">
       <Logo h={128} w={128} />
       <Text
+        style={{ textAlign: "center" }}
         size="5rem"
         fw={700}
         variant="gradient"
@@ -30,6 +31,7 @@ export default function Index() {
         LOAN WOLF
       </Text>
       <Text
+        style={{ textAlign: "center" }}
         size="xl"
         fw={500}
         variant="gradient"
