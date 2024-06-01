@@ -1,4 +1,4 @@
-import { Text, Flex, Button, Anchor, Box } from "@mantine/core";
+import { Text, Flex, Button, Anchor } from "@mantine/core";
 import type { MetaFunction } from "@remix-run/node";
 
 import { Logo } from "~/comps/logo";

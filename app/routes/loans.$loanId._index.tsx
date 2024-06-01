@@ -1,4 +1,4 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { PaymentHistoryTable } from "~/comps/payment-history-table";
@@ -30,6 +30,10 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
     });
   }
   return json({ ...loans[0] });
+};
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `${data?.name || "Loan"} - Loan Wolf` }];
 };
 
 export default function LoanRoute() {

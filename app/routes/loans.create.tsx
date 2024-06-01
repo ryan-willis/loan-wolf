@@ -10,7 +10,7 @@ import {
   Text,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
 import ShortUniqueId from "short-unique-id";
 import { commitSession, getSession } from "~/session";
 import { db } from "~/utils/db.server";
@@ -53,7 +53,9 @@ export async function action({ request }: ActionFunctionArgs) {
     },
   });
 }
-
+export const meta: MetaFunction = () => {
+  return [{ title: "Create a Loan" }];
+};
 export default function CreateLoanRoute() {
   return (
     <>

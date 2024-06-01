@@ -1,4 +1,9 @@
-import { LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+import {
+  LoaderFunctionArgs,
+  MetaFunction,
+  json,
+  redirect,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
 import { commitSession, getSession } from "~/session";
@@ -164,6 +169,9 @@ function LoanManageAccessForm() {
   );
 }
 
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `${data?.name || "Loan"} - Manage` }];
+};
 export default function LoanManageRoute() {
   const [form, setForm] = useState({ amount: 0.0, date: "", isOpen: false });
   const loaderData = useLoaderData<typeof loader>();
