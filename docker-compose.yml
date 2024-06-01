@@ -9,5 +9,6 @@ services:
       tags: [ghcr.io/ryan-willis/loan-wolf:latest]
     ports:
       - "${LOAN_WOLF_LOCAL_PORT:-3000}:3000"
+    env_file: .env.development
     volumes:
       - lw_data:/data

@@ -19,7 +19,7 @@ const { getSession, commitSession, destroySession } =
       name: "__loanwolf",
       path: "/",
       sameSite: "lax",
-      secrets: ["changethis"],
+      secrets: [process.env["SESSION_SECRET"]!],
       // secure: true,
     },
   });
