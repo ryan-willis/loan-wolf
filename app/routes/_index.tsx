@@ -1,4 +1,4 @@
-import { Text, Flex, Button } from "@mantine/core";
+import { Text, Flex, Button, Anchor, Box } from "@mantine/core";
 import type { MetaFunction } from "@remix-run/node";
 
 import { Logo } from "~/comps/logo";
@@ -68,6 +68,30 @@ export default function Index() {
       >
         Create a Loan
       </Button>
+      <Flex
+        style={{ position: "fixed", bottom: "1rem" }}
+        w="100%"
+        gap=".25rem"
+        justify="center"
+      >
+        <Text
+          variant="gradient"
+          gradient={{
+            from: "blue",
+            to: "teal",
+            deg: 45,
+          }}
+        >
+          made with ♥ by{" "}
+        </Text>
+        <Anchor
+          href="https://ryanwillis.com"
+          target="_blank"
+          underline="always"
+        >
+          ryan
+        </Anchor>
+      </Flex>
     </Flex>
   );
 }

@@ -91,6 +91,7 @@ export default function CreateLoanRoute() {
                 name="num_installments"
                 type="number"
                 required
+                rightSection={<Text size="14">mo.</Text>}
               />
             </Grid.Col>
             <Grid.Col span={{ base: 6, md: 4 }}>
@@ -100,6 +101,8 @@ export default function CreateLoanRoute() {
               <NativeSelect
                 label="Payment Interval"
                 name="payment_interval"
+                value="5"
+                disabled
                 data={[
                   { value: "1", label: "Daily" },
                   { value: "2", label: "Weekly" },
