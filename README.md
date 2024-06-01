@@ -1,7 +1,5 @@
-[![](app/assets/logo-gradient.svg)]()
-
-
 <div align="center">
+<img src="app/assets/logo-gradient.svg" width="200" />
 <h1>Loan Wolf</h1>
 </div>
 
