@@ -24,7 +24,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const term = Number(form.get("num_installments"));
   const startAt = new Date(String(form.get("start_date"))).getTime();
   const paymentInterval = Number(form.get("payment_interval"));
-  const managePasswordRaw = String(form.get("loan_name"));
+  const managePasswordRaw = String(form.get("manage_password"));
   const interestCompounds = paymentInterval;
 
   const data = {

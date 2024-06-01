@@ -91,7 +91,6 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
       },
     });
     return json({ ...loan, lastAdded: pmt.id, prompt: false, message: "" });
-    return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
   }
   // } else if (_action === "access") {
   const managePassword = String(form.get("password"));
@@ -118,7 +117,6 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
         statusText: "Unauthorized",
       }
     );
-    return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
   }
   const session = await getSession(request.headers.get("Cookie"));
   const loans = new Set(session.get("loans") || []);
