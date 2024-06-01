@@ -17,7 +17,9 @@ export function PaymentHistoryTable({
 }: PaymentHistoryTableProps) {
   return (
     <Fieldset pt="lg">
-      <Title order={4}>{header}</Title>
+      <Title order={4} mb="md">
+        {header}
+      </Title>
       <Table.ScrollContainer minWidth={600}>
         <Table withColumnBorders>
           {payments.length > 0 && (
