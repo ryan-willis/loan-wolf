@@ -15,7 +15,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoansRoute() {
   return (
-    <AppShell header={{ height: 60 }} withBorder={false}>
+    <AppShell header={{ height: 60 }} withBorder={false} padding="xs">
       <AppShell.Header p="sm" h="60">
         <Anchor href="/" underline="never" c="white">
           <Flex align="center" gap="sm" justify="start">

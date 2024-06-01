@@ -15,8 +15,8 @@ export function LoanSummary({
   showManage?: boolean;
 }) {
   return (
-    <Fieldset>
-      <Flex justify="space-between" mb="sm">
+    <Fieldset pt="lg">
+      <Flex justify="space-between" mb="md">
         <Title order={4}>Loan Summary</Title>
         {showManage && loan.publicId !== "sample-loan" && (
           <Button

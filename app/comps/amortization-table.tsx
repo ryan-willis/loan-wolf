@@ -20,7 +20,7 @@ interface AmortizationTableProps {
 export function AmortizationTable({ payments, total }: AmortizationTableProps) {
   const [opened, { toggle }] = useDisclosure(false);
   return (
-    <Fieldset>
+    <Fieldset pt="lg">
       <Flex justify="space-between">
         <Title order={4}>Amortization Schedule</Title>
         <Button

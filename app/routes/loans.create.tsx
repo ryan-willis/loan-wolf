@@ -1,6 +1,5 @@
 import {
   Button,
-  Container,
   Fieldset,
   Flex,
   Grid,
@@ -57,10 +56,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function CreateLoanRoute() {
   return (
-    <Container>
+    <>
       <h1>Create a Loan</h1>
       <form method="post">
-        <Fieldset legend="Loan Details">
+        <Fieldset legend="Loan Details" pt="lg">
           <Grid>
             <Grid.Col span={{ base: 12, sm: 6, md: 4 }}>
               <TextInput label="Name" name="loan_name" required />
@@ -114,10 +113,7 @@ export default function CreateLoanRoute() {
               />
             </Grid.Col>
             <Grid.Col span={{ base: 6, md: 4 }}>
-              <PasswordInput
-                label="Management Password"
-                name="manage_password"
-              />
+              <PasswordInput label="Password" name="manage_password" />
             </Grid.Col>
           </Grid>
         </Fieldset>
@@ -136,6 +132,6 @@ export default function CreateLoanRoute() {
           </Button>
         </Flex>
       </form>
-    </Container>
+    </>
   );
 }
