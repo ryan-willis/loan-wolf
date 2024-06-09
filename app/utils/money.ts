@@ -28,3 +28,27 @@ export function getMonthlyPayment(
   const denominator = 1 - Math.pow(1 + multiplier, -loan.term); // ain't math fun?
   return Math.round((100 * numerator) / denominator) / 100;
 }
+
+export function getInterestRate({
+  amount,
+  term,
+  monthly,
+}: Pick<ILoan, "amount" | "term"> & { monthly: number }) {
+  const eq = (r: number) =>
+    monthly - (r * amount) / (1 - Math.pow(1 + r, -term));
+
+  const solve = (lb: number, ub: number, t: number) => {
+    let r = (lb + ub) / 2;
+    while (ub - lb > t) {
+      if (eq(r) * eq(lb) < 0) {
+        ub = r;
+      } else {
+        lb = r;
+      }
+      r = (lb + ub) / 2;
+    }
+    return r;
+  };
+
+  return Math.round(1000 * (solve(0.0001, 1, 0.0000001) * 12 * 100)) / 1000;
+}

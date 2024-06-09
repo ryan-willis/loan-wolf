@@ -9,7 +9,7 @@ import {
   ScrollRestoration,
   useRouteLoaderData,
 } from "@remix-run/react";
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
+import { ColorSchemeScript, MantineProvider, createTheme } from "@mantine/core";
 import { HeaderScripts, HeaderTags } from "./config";
 
 export const loader = async () => {
@@ -24,6 +24,15 @@ export const loader = async () => {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const data: HeaderTags = useRouteLoaderData("root")!;
+  const theme = createTheme({
+    breakpoints: {
+      xs: "38em",
+      sm: "48em",
+      md: "62em",
+      lg: "75em",
+      xl: "88em",
+    },
+  });
   return (
     <html lang="en">
       <head>
@@ -50,7 +59,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <HeaderScripts data={data} />
       </head>
       <body>
-        <MantineProvider defaultColorScheme="dark">{children}</MantineProvider>
+        <MantineProvider theme={theme} defaultColorScheme="dark">
+          {children}
+        </MantineProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
