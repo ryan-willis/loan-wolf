@@ -4,7 +4,6 @@
 
 ### Track loan payments like you're on the hunt!
 
-
 https://loan-wolf.r7.cx
 
 ## About
@@ -13,17 +12,9 @@ Loan Wolf is a simple loan tracker that allows you to create loans and manage pa
 
 Create a shareable loan that only you can manage with basic password protection.
 
-### Create a Loan
-
-![Create a Loan](docs/create_loan.png)
-
-### Manage Payments
-
-![Manage Payments](docs/manage_loan.png)
+![](docs/demo.gif)
 
 </div>
-
-
 
 ### Running Loan Wolf
 
@@ -77,7 +68,7 @@ services:
 
 ### Environment Variables
 
-If any of the `_SECRET` environment variables are not specified, randomly generated values will be generated and placed in the `/data/loan-wolf` directory when the container is first run. (If you're running the built application locally, these files will be places the operating system's temporary directory.)
+If any of the `_SECRET` environment variables are not specified, randomly generated values will be placed in the `/data/loan-wolf` directory when the container is first run. (If you're running the built application locally, these files will be places the operating system's temporary directory.)
 
 - `SESSION_SECRET`
   - A secure string for signing session cookies.

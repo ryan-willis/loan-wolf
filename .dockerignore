@@ -7,3 +7,4 @@
 /build
 /prisma/dev.*
 /prisma/*.js
+/docs
