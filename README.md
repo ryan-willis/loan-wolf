@@ -55,10 +55,14 @@ services:
 
 ### Environment Variables
 
-- `SESSION_SECRET` (required)
+If any of the `_SECRET` environment variables are not specified, randomly generated values will be generated and placed in the `/data/loan-wolf` directory when the container is first run. (If you're running the built application locally, these files will be places the operating system's temporary directory.)
+
+- `SESSION_SECRET`
   - A secure string for signing session cookies.
-- `PASSWORD_SECRET` (required)
+- `PASSWORD_SECRET`
   - A secure string for hashing passwords in the database (uses `argon2` under the hood).
+- `DATABASE_URL`
+  - The connection string for the SQLite database (e.g. `file:./prisma/dev.db`).
 
 ## Local Development
 
