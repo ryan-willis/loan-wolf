@@ -27,15 +27,17 @@ Create a shareable loan that only you can manage with basic password protection.
 
 ### Running Loan Wolf
 
+#### Docker
+
 To run the application yourself, I recommend using Docker:
 
 ```sh
-docker run -d -v ~/.loan-wolf:/data/loan-wolf -p 3000:3000 ghcr.io/ryan-willis/loan-wolf:latest
+docker run -d -p 3000:3000 ghcr.io/ryan-willis/loan-wolf:latest
 ```
 
 Then visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Docker Compose
+#### Docker Compose
 
 You can also use Docker Compose (if you've checked out the repo):
 
@@ -47,10 +49,30 @@ Here's a minimal configuration for `docker-compose.yml`:
 
 ```yaml
 services:
-  loan-wolf-test:
+  loan-wolf:
     image: ghcr.io/ryan-willis/loan-wolf:latest
     ports:
       - 3000:3000
+```
+
+The SQLite database will be stored in a volume at `/data/loan-wolf` within the container so data will persist between container restarts.
+You can add your own volume to the `loan-wolf` service to persist the data on the host machine:
+
+```sh
+docker run -d -p 3000:3000 -v ~/.loan-wolf:/data/loan-wolf ghcr.io/ryan-willis/loan-wolf:latest
+```
+
+
+```yaml
+volumes:
+  loan_wolf:
+services:
+  loan-wolf:
+    image: ghcr.io/ryan-willis/loan-wolf:latest
+    ports:
+      - 3000:3000
+    volumes:
+      - loan_wolf:/data/loan-wolf
 ```
 
 ### Environment Variables
@@ -62,7 +84,7 @@ If any of the `_SECRET` environment variables are not specified, randomly genera
 - `PASSWORD_SECRET`
   - A secure string for hashing passwords in the database (uses `argon2` under the hood).
 - `DATABASE_URL`
-  - The connection string for the SQLite database (e.g. `file:./prisma/dev.db`).
+  - The connection string for the SQLite database (defaults to `file:/data/loan-wolf/sqlite3.db`).
 
 ## Local Development
 
