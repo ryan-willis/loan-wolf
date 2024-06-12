@@ -16,7 +16,7 @@ import { useState } from "react";
 import ShortUniqueId from "short-unique-id";
 import { AmortizationTable } from "~/comps/amortization-table";
 import { useAmortize } from "~/hooks/use-amortize";
-import { commitSession, getSession } from "~/session";
+import { commitSession, getSession } from "~/utils/session.server";
 import { formatDate } from "~/utils/date";
 import { db } from "~/utils/db.server";
 import { formatMoney, getMonthlyPayment } from "~/utils/money";

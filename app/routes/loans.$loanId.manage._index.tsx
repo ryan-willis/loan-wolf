@@ -6,7 +6,7 @@ import {
 } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { db } from "~/utils/db.server";
-import { commitSession, getSession } from "~/session";
+import { commitSession, getSession } from "~/utils/session.server";
 import { verifyPassword } from "~/utils/security.server";
 import { useState } from "react";
 import { usePaymentHistory } from "~/hooks/use-payment-history";
