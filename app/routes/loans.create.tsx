@@ -9,6 +9,7 @@ import {
   TextInput,
   Text,
   Title,
+  Tooltip,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { ActionFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
@@ -177,28 +178,34 @@ export default function CreateLoanRoute() {
               />
             </Grid.Col>
             <Grid.Col span={{ base: 6, sm: 4 }}>
-              <NativeSelect
-                label="Payment Interval"
-                name="payment_interval"
-                value={loan.payment_interval}
-                onChange={(event) =>
-                  setLoan({
-                    ...loan,
-                    payment_interval: event.currentTarget.value,
-                  })
-                }
-                disabled
-                data={[
-                  { value: "1", label: "Daily" },
-                  { value: "2", label: "Weekly" },
-                  { value: "3", label: "Bi-weekly" },
-                  { value: "4", label: "Semi-monthly" },
-                  { value: "5", label: "Monthly" },
-                  { value: "6", label: "Quarterly" },
-                  { value: "7", label: "Semi-annually" },
-                  { value: "8", label: "Annually" },
-                ]}
-              />
+              <Tooltip
+                label="Monthly payments are the only option for now."
+                openDelay={400}
+                transitionProps={{ transition: "pop" }}
+              >
+                <NativeSelect
+                  label="Payment Interval"
+                  name="payment_interval"
+                  value={loan.payment_interval}
+                  onChange={(event) =>
+                    setLoan({
+                      ...loan,
+                      payment_interval: event.currentTarget.value,
+                    })
+                  }
+                  disabled
+                  data={[
+                    { value: "1", label: "Daily" },
+                    { value: "2", label: "Weekly" },
+                    { value: "3", label: "Bi-weekly" },
+                    { value: "4", label: "Semi-monthly" },
+                    { value: "5", label: "Monthly" },
+                    { value: "6", label: "Quarterly" },
+                    { value: "7", label: "Semi-annually" },
+                    { value: "8", label: "Annually" },
+                  ]}
+                />
+              </Tooltip>
             </Grid.Col>
             <Grid.Col span={{ base: 6, sm: 4 }}>
               <PasswordInput
