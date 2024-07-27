@@ -68,7 +68,7 @@ services:
 
 ### Environment Variables
 
-If any of the `_SECRET` environment variables are not specified, randomly generated values will be placed in the `/data/loan-wolf` directory when the container is first run. (If you're running the built application locally, these files will be places the operating system's temporary directory.)
+If any of the `_SECRET` environment variables are not specified, randomly generated values will be placed in the `/data/loan-wolf` directory when the container is first run. (If you're running the built application locally, these files will be placed in the operating system's temporary directory.)
 
 - `SESSION_SECRET`
   - A secure string for signing session cookies.
