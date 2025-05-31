@@ -1,4 +1,4 @@
-import { Fieldset, Table, Title } from "@mantine/core";
+import { Button, Fieldset, Table, Title } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { usePaymentHistory } from "~/hooks/use-payment-history";
 import { formatDate } from "~/utils/date";
@@ -72,7 +72,9 @@ export function PaymentHistoryTable({
                     <form method="post">
                       <input type="hidden" name="form" value="remove-payment" />
                       <input type="hidden" name="payment" value={payment.id} />
-                      <button>Remove</button>
+                      <Button size="compact-xs" color="gray" type="submit">
+                        Remove
+                      </Button>
                     </form>
                   </Table.Td>
                 )}
