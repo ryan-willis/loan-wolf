@@ -1,7 +1,7 @@
 import { Button, Fieldset, Flex, Table, Title } from "@mantine/core";
 import { ILoan } from "~/types";
 import { formatDate } from "~/utils/date";
-import { formatMoney } from "~/utils/money";
+import { formatMoney, getMonthlyPayment } from "~/utils/money";
 
 export function LoanSummary({
   loan,
@@ -37,11 +37,15 @@ export function LoanSummary({
             <Table.Td>{loan.name}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Th>Original Amount</Table.Th>
+            <Table.Th>Monthly Payment</Table.Th>
+            <Table.Td>{formatMoney(getMonthlyPayment(loan))}</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Original Principal</Table.Th>
             <Table.Td>{formatMoney(originalAmount)}</Table.Td>
           </Table.Tr>
           <Table.Tr>
-            <Table.Th>Current Amount</Table.Th>
+            <Table.Th>Principal Balance</Table.Th>
             <Table.Td>{formatMoney(loan.amount)}</Table.Td>
           </Table.Tr>
           <Table.Tr>
