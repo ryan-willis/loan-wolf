@@ -1,10 +1,10 @@
-FROM node:18-alpine as base
+FROM node:24-alpine AS base
 ENV NODE_ENV production
 # for prisma
 RUN apk add openssl && rm -rf /var/cache/apk/*
 
 # development/build node_modules
-FROM base as build
+FROM base AS build
 WORKDIR /myapp
 ADD package*.json ./
 RUN npm install --include=dev
@@ -14,7 +14,7 @@ ADD . .
 RUN npm run build:contained
 
 # production/runtime node_modules
-FROM base as production-deps
+FROM base AS production-deps
 WORKDIR /myapp
 COPY --from=build /myapp/node_modules /myapp/node_modules
 ADD package*.json ./
