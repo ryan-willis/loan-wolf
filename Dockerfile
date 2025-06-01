@@ -1,5 +1,5 @@
 FROM node:24-alpine AS base
-ENV NODE_ENV production
+ENV NODE_ENV=production
 # for prisma
 RUN apk add openssl && rm -rf /var/cache/apk/*
 
@@ -34,7 +34,7 @@ EXPOSE 3000
 
 RUN mkdir -p /data/loan-wolf
 VOLUME [ "/data/loan-wolf" ]
-ENV DATABASE_URL file:/data/loan-wolf/sqlite3.db
+ENV DATABASE_URL=file:/data/loan-wolf/sqlite3.db
 
 # important: for now, migrates the database and seeds it if necessary
 CMD ["npm", "run", "start:contained"]

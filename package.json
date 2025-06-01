@@ -1,5 +1,6 @@
 {
   "name": "loan-wolf",
+  "version": "1.1.0",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -17,8 +18,8 @@
     "build:contained": "remix vite:build",
     "prestart:contained": "prisma migrate deploy && prisma db seed",
     "start:contained": "remix-serve ./build/server/index.js",
-    "build:docker": "docker compose build",
-    "publish:docker": "docker push ghcr.io/ryan-willis/loan-wolf:latest"
+    "build:docker": "docker buildx bake",
+    "publish:docker": "scripts/docker-publish.sh"
   },
   "dependencies": {
     "@mantine/core": "^7.10.1",
