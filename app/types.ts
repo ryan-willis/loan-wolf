@@ -39,7 +39,7 @@ export interface ILoan {
   amount: number;
   interestRate: number;
   term: number;
-  currentAmount?: number;
+  originalAmount?: number;
   startAt: number;
 }
 

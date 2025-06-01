@@ -28,6 +28,7 @@ import {
   Title,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
+import { getMonthlyPayment } from "~/utils/money";
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const form = await request.formData();
@@ -92,7 +93,6 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
     });
     return json({ ...loan, lastAdded: pmt.id, prompt: false, message: "" });
   }
-  // } else if (_action === "access") {
   const managePassword = String(form.get("password"));
   if (loan.managePassword === "denied" || loan.managePassword === "") {
     throw new Response("Access Denied", {
@@ -128,7 +128,6 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
       "Set-Cookie": await commitSession(session),
     },
   });
-  // }
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
@@ -256,7 +255,25 @@ export default function LoanManageRoute() {
       <Space h="xs" />
       <Flex justify="end" p="sm">
         <Button
-          onClick={() => setForm({ ...form, isOpen: true })}
+          onClick={() =>
+            setForm({
+              ...form,
+              isOpen: true,
+              // default to the next installment date (sourced from amortization)
+              date:
+                amortizationPayments.length > 0
+                  ? amortizationPayments[0].date.toUTCString()
+                  : new Date().toUTCString(),
+              // the last installment (payment with interest) is used as the default amount,
+              // falling back to the monthly payment amount if there are no payments with interest
+              amount:
+                payments
+                  .sort((a, b) => b.date - a.date)
+                  .find((p) => p.interest > 0)?.amount ||
+                getMonthlyPayment(loan) ||
+                0,
+            })
+          }
           variant="gradient"
           gradient={{
             from: "blue",
@@ -294,6 +311,7 @@ export default function LoanManageRoute() {
                 onChange={(v) =>
                   setForm({ ...form, date: v?.toUTCString() || "" })
                 }
+                value={form.date ? new Date(form.date) : undefined}
               />
             </Grid.Col>
             <Grid.Col span={{ base: 6, sm: 6, md: 6 }}>

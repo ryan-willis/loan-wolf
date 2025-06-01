@@ -21,10 +21,11 @@ export function getPrincipalInterestSpread(
 }
 
 export function getMonthlyPayment(
-  loan: Pick<ILoan, "amount" | "interestRate" | "term">
+  loan: Pick<ILoan, "originalAmount" | "amount" | "interestRate" | "term">
 ) {
+  const amount = loan.originalAmount || loan.amount;
   const multiplier = loan.interestRate / 12;
-  const numerator = loan.amount * multiplier;
+  const numerator = amount * multiplier;
   const denominator = 1 - Math.pow(1 + multiplier, -loan.term); // ain't math fun?
   return Math.round((100 * numerator) / denominator) / 100;
 }
