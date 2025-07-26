@@ -5,7 +5,7 @@ node_modules
 .env
 /prisma/dev.*
 /prisma/*.js
-/tmp/
+tmp/
 .vscode/
 *.xcf
 *.cpuprofile
