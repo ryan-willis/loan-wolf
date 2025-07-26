@@ -1,7 +1,7 @@
 import {
+  json,
   LoaderFunctionArgs,
   MetaFunction,
-  json,
   redirect,
 } from "@remix-run/node";
 import { useActionData, useLoaderData } from "@remix-run/react";
@@ -29,6 +29,7 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { getMonthlyPayment } from "~/utils/money";
+import { getLoan } from "~/services/loan.server";
 
 export const action = async ({ request, params }: LoaderFunctionArgs) => {
   const form = await request.formData();
@@ -91,8 +92,14 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
         installment,
       },
     });
-    return json({ ...loan, lastAdded: pmt.id, prompt: false, message: "" });
+    return json({
+      ...loan,
+      lastAdded: pmt.id,
+      prompt: false,
+      message: "",
+    });
   }
+
   const managePassword = String(form.get("password"));
   if (loan.managePassword === "denied" || loan.managePassword === "") {
     throw new Response("Access Denied", {
@@ -131,31 +138,25 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const loans = await db.loan.findMany({
-    where: {
-      OR: [{ publicId: params.loanId }, { id: params.loanId }],
-    },
-    select: {
-      publicId: true,
-      name: true,
-      amount: true,
-      interestRate: true,
-      term: true,
-      startAt: true,
-      payments: {
-        orderBy: {
-          paidAt: "asc",
-        },
+  const { loan } = await getLoan(params.loanId!, {
+    publicId: true,
+    name: true,
+    amount: true,
+    interestRate: true,
+    term: true,
+    startAt: true,
+    payments: {
+      orderBy: {
+        paidAt: "asc",
       },
     },
   });
-  if (loans.length == 0) {
+  if (!loan) {
     throw new Response("Loan not found", {
       status: 404,
       statusText: "Not Found",
     });
   }
-  const loan = loans[0];
 
   const session = await getSession(request.headers.get("Cookie"));
   const prompt =

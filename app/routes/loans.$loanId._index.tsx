@@ -1,35 +1,34 @@
-import { LoaderFunctionArgs, MetaFunction, json } from "@remix-run/node";
+import { json, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { db } from "~/utils/db.server";
 import { PaymentHistoryTable } from "~/comps/payment-history-table";
 import { usePaymentHistory } from "~/hooks/use-payment-history";
 import { AmortizationTable } from "~/comps/amortization-table";
 import { useAmortize } from "~/hooks/use-amortize";
 import { LoanSummary } from "~/comps/loan-summary";
 import { Space } from "@mantine/core";
+import { getLoan } from "~/services/loan.server";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const loans = await db.loan.findMany({
-    where: {
-      OR: [{ publicId: params.loanId }, { id: params.loanId }],
-    },
-    select: {
-      publicId: true,
-      name: true,
-      amount: true,
-      interestRate: true,
-      term: true,
-      startAt: true,
-      payments: true,
+  const { loan } = await getLoan(params.loanId!, {
+    publicId: true,
+    name: true,
+    amount: true,
+    interestRate: true,
+    term: true,
+    startAt: true,
+    payments: {
+      orderBy: {
+        createdAt: "asc",
+      },
     },
   });
-  if (loans.length == 0) {
+  if (!loan) {
     throw new Response("Loan not found", {
       status: 404,
       statusText: "Not Found",
     });
   }
-  return json({ ...loans[0] });
+  return json(loan);
 };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -38,6 +37,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export default function LoanRoute() {
   const loaderData = useLoaderData<typeof loader>();
+
   const { payments, loan } = usePaymentHistory({
     loan: loaderData,
     payments: loaderData.payments,
