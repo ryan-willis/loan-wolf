@@ -138,19 +138,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const { loan } = await getLoan(params.loanId!, {
-    publicId: true,
-    name: true,
-    amount: true,
-    interestRate: true,
-    term: true,
-    startAt: true,
-    payments: {
-      orderBy: {
-        paidAt: "asc",
-      },
-    },
-  });
+  const { loan } = await getLoan(params.loanId!);
   if (!loan) {
     throw new Response("Loan not found", {
       status: 404,

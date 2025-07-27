@@ -1,11 +1,24 @@
 import { Prisma } from "@prisma/client";
 import { db } from "~/utils/db.server";
 
-export const getLoan = async (loanId: string, select: Prisma.LoanSelect) => {
-  const loans = await db.loan.findMany({
-    where: {
-      OR: [{ publicId: loanId }, { id: loanId }],
+export const getLoan = async (
+  loanId: string,
+  select: Prisma.LoanSelect = {
+    publicId: true,
+    name: true,
+    amount: true,
+    interestRate: true,
+    term: true,
+    startAt: true,
+    payments: {
+      orderBy: {
+        paidAt: "asc",
+      },
     },
+  }
+) => {
+  const loans = await db.loan.findMany({
+    where: { OR: [{ publicId: loanId }, { id: loanId }] },
     select,
   });
 
