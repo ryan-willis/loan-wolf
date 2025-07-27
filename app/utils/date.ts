@@ -8,3 +8,10 @@ export function formatDate(d: Date | number | string) {
         timeZone: "UTC",
       });
 }
+
+export function isWithinInterval(
+  d8: number,
+  interval: { start: number; end: number }
+) {
+  return d8 >= interval.start && d8 <= interval.end;
+}

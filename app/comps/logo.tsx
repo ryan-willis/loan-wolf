@@ -1,11 +1,4 @@
-import {
-  Defs,
-  LinearGradient,
-  Path,
-  Stop,
-  Svg,
-  Text,
-} from "@react-pdf/renderer";
+import { Defs, LinearGradient, Path, Stop, Svg } from "@react-pdf/renderer";
 
 export function Logo({
   h,
@@ -55,7 +48,7 @@ export function PDFLogo({
   fill?: string;
 }) {
   return (
-    <Svg height={h} width={w} viewBox="0 0 6766 1024">
+    <Svg height={h} width={w} viewBox="0 0 1024 1024">
       <Defs>
         <LinearGradient id="teal-blue" x1="0" y1="0" x2="1" y2="1">
           {/* --mantine-color-blue-filled */}
@@ -77,14 +70,6 @@ export function PDFLogo({
         fill={fill}
         d="m789.16 543.88c0 3.98 13.65 14.22 30.15 22.75 17.06 7.97 35.27 19.34 40.39 25.6 9.1 10.24 9.1 11.38-6.83 22.76-9.1 6.25-29.01 15.93-43.8 21.61-32.43 11.95-40.39 24.47-15.93 24.47 22.75 0 75.09-27.88 89.31-46.65l11.38-15.93-17.07-17.64c-15.92-17.06-65.42-44.94-80.21-44.94-3.98 0-7.39 3.41-7.39 7.97z"
       />
-      <Text
-        fill={fill}
-        x={1448}
-        y={825}
-        style={{ fontSize: "900px", fontWeight: "bold" }}
-      >
-        LOAN WOLF
-      </Text>
     </Svg>
   );
 }
