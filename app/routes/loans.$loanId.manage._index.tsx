@@ -206,6 +206,7 @@ function LoanManageAccessForm({ message }: { message?: string }) {
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [{ title: `${data?.name || "Loan"} - Manage` }];
 };
+
 export default function LoanManageRoute() {
   const [form, setForm] = useState({ amount: 0.0, date: "", isOpen: false });
   const loaderData = useLoaderData<typeof loader>();
