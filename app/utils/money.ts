@@ -10,6 +10,10 @@ export function formatMoney(amount: number) {
   return MoneyFormatter.format(amount);
 }
 
+export function formatInterestRate(rate: number) {
+  return Number(rate * 100).toFixed(3);
+}
+
 export function getPrincipalInterestSpread(
   loan: Pick<ILoan, "amount" | "interestRate">,
   payment: Pick<IPayment, "amount">

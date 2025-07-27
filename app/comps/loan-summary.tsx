@@ -1,7 +1,11 @@
 import { Button, Fieldset, Flex, Table, Title } from "@mantine/core";
 import { ILoan } from "~/types";
 import { formatDate } from "~/utils/date";
-import { formatMoney, getMonthlyPayment } from "~/utils/money";
+import {
+  formatInterestRate,
+  formatMoney,
+  getMonthlyPayment,
+} from "~/utils/money";
 
 export function LoanSummary({
   loan,
@@ -50,7 +54,7 @@ export function LoanSummary({
           </Table.Tr>
           <Table.Tr>
             <Table.Th>Interest Rate</Table.Th>
-            <Table.Td>{Number(loan.interestRate * 100).toFixed(3)}%</Table.Td>
+            <Table.Td>{formatInterestRate(loan.interestRate)}%</Table.Td>
           </Table.Tr>
           <Table.Tr>
             {/* nifty lil hack */}
