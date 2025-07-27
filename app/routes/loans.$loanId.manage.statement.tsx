@@ -4,19 +4,7 @@ import { getLoanStatementPDF } from "~/services/statement.server";
 import { getSession } from "~/utils/session.server";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
-  const { loan } = await getLoan(params.loanId!, {
-    publicId: true,
-    name: true,
-    amount: true,
-    interestRate: true,
-    term: true,
-    startAt: true,
-    payments: {
-      orderBy: {
-        paidAt: "asc",
-      },
-    },
-  });
+  const { loan } = await getLoan(params.loanId!);
   if (!loan) {
     throw new Response("Loan not found", {
       status: 404,
@@ -26,6 +14,9 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   const session = await getSession(request.headers.get("Cookie"));
   const hasManageAccess = session.get("loans")?.includes(params.loanId!);
+
+  const { origin } = new URL(request.url);
+  const linkUrl = `${origin}/loans/${loan.publicId}`;
 
   if (!hasManageAccess) {
     throw new Response("Unauthorized", {
@@ -38,6 +29,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     await getLoanStatementPDF({
       loan,
       payments: loan.payments,
+      linkUrl,
     }),
     {
       headers: {

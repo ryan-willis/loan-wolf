@@ -9,19 +9,7 @@ import { Space } from "@mantine/core";
 import { getLoan } from "~/services/loan.server";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
-  const { loan } = await getLoan(params.loanId!, {
-    publicId: true,
-    name: true,
-    amount: true,
-    interestRate: true,
-    term: true,
-    startAt: true,
-    payments: {
-      orderBy: {
-        createdAt: "asc",
-      },
-    },
-  });
+  const { loan } = await getLoan(params.loanId!);
   if (!loan) {
     throw new Response("Loan not found", {
       status: 404,

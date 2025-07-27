@@ -6,14 +6,27 @@ import {
   Document,
   StyleSheet,
   renderToBuffer,
+  Link,
 } from "@react-pdf/renderer";
-import { PDFLogo } from "~/comps/logo";
+// import { PDFLogo } from "~/comps/logo";
 import { formatDate } from "~/utils/date";
+import { hashCode } from "~/utils/hash";
+import { formatMoney, getMonthlyPayment } from "~/utils/money";
 
 const styles = StyleSheet.create({
+  colView: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  rowView: {
+    display: "flex",
+    flexDirection: "row",
+  },
   page: {
     flexDirection: "row",
-    backgroundColor: "#E4E4E4",
+    // backgroundColor: "#FFFFFF",
+    fontSize: 12,
+    padding: 12,
   },
   section: {
     margin: 10,
@@ -24,9 +37,11 @@ const styles = StyleSheet.create({
 
 // Create Document Component
 const LoanStatementDocument = ({
+  linkUrl,
   loan,
   payments,
 }: {
+  linkUrl?: string;
   loan: Loan;
   payments: Payment[];
 }) => (
@@ -35,18 +50,58 @@ const LoanStatementDocument = ({
       <View style={styles.section}>
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
+            ...styles.rowView,
+            // alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <PDFLogo h={38} w={200} />
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>
-            {formatDate(loan.startAt)}
-          </Text>
+          {/* <PDFLogo h={38} w={200} /> */}
+          <View style={styles.colView}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>
+              Loan Statement
+            </Text>
+            {linkUrl && (
+              <Text style={{ fontSize: 10 }}>
+                <Link src={linkUrl}>{linkUrl}</Link>
+              </Text>
+            )}
+          </View>
+
+          <View
+            style={{
+              ...styles.colView,
+              alignItems: "flex-end",
+            }}
+          >
+            <Text style={{ fontSize: 10 }}>Loan Number</Text>
+            <Text style={{ fontSize: 12 }}>{hashCode(loan.publicId)}</Text>
+            <Text>&nbsp;</Text>
+            <Text style={{ fontSize: 14 }}>
+              Total due on {formatDate(loan.startAt)}:
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+            >
+              {formatMoney(getMonthlyPayment(loan))}
+            </Text>
+          </View>
         </View>
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Statement</Text>
+        <View
+          style={{
+            color: "white",
+            backgroundColor: "black",
+            padding: 4,
+            marginTop: 10,
+          }}
+        >
+          <Text>Current Payment</Text>
+        </View>
+        <View>
+          <Text>Loan number: {hashCode(loan.publicId)}</Text>
+        </View>
         <Text>{loan.publicId}</Text>
         <Text>{loan.amount}</Text>
         <Text>{loan.interestRate}</Text>
@@ -58,10 +113,8 @@ const LoanStatementDocument = ({
   </Document>
 );
 
-export const getLoanStatementPDF = async ({
-  loan,
-  payments,
-}: {
+export const getLoanStatementPDF = async (args: {
+  linkUrl?: string;
   loan: Loan;
   payments: Payment[];
-}) => renderToBuffer(<LoanStatementDocument loan={loan} payments={payments} />);
+}) => renderToBuffer(<LoanStatementDocument {...args} />);
