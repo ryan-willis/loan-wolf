@@ -7,9 +7,6 @@ services:
     build:
       context: .
       tags: [ghcr.io/ryan-willis/loan-wolf:latest]
-      platforms:
-        - linux/amd64
-        - linux/arm64
     ports:
       - "${LOAN_WOLF_LOCAL_PORT:-3000}:3000"
     env_file: .env.development
