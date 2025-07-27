@@ -26,6 +26,7 @@
     "@mantine/dates": "^7.10.1",
     "@mantine/hooks": "^7.10.1",
     "@prisma/client": "^5.14.0",
+    "@react-pdf/renderer": "^4.3.0",
     "@remix-run/node": "^2.16.8",
     "@remix-run/react": "^2.16.8",
     "@remix-run/serve": "^2.16.8",
