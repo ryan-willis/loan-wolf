@@ -36,7 +36,7 @@ export default function LoansRoute() {
         </Anchor>
       </AppShell.Header>
       <AppShell.Main>
-        <Container size="sm" p={0}>
+        <Container size="md" p={0}>
           <Outlet />
         </Container>
       </AppShell.Main>
