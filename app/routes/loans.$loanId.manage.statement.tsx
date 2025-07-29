@@ -15,9 +15,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const hasManageAccess = session.get("loans")?.includes(params.loanId!);
 
-  const { origin } = new URL(request.url);
-  const linkUrl = `${origin}/loans/${loan.publicId}`;
-
   if (!hasManageAccess) {
     throw new Response("Unauthorized", {
       status: 401,
@@ -26,11 +23,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   }
 
   return new Response(
-    await getLoanStatementPDF({
-      loan,
-      payments: loan.payments,
-      linkUrl,
-    }),
+    await getLoanStatementPDF({ loan, payments: loan.payments }),
     {
       headers: {
         "Content-Type": "application/pdf",

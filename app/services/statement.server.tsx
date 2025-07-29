@@ -170,11 +170,7 @@ const AmortizationPages = ({
 };
 
 // Create Document Component
-const LoanStatementDocument = (args: {
-  linkUrl?: string;
-  loan: Loan;
-  payments: Payment[];
-}) => {
+const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
   const { payments, loan } = usePaymentHistory({
     loan: args.loan,
     payments: args.payments,
@@ -402,7 +398,6 @@ const LoanStatementDocument = (args: {
 };
 
 export const getLoanStatementPDF = async (args: {
-  linkUrl?: string;
   loan: Loan;
   payments: Payment[];
 }) => renderToBuffer(<LoanStatementDocument {...args} />);
