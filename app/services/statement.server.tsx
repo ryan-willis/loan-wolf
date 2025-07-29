@@ -12,6 +12,7 @@ import {
   Path,
   Stop,
   Svg,
+  ViewProps,
 } from "@react-pdf/renderer";
 
 import { useAmortize } from "~/hooks/use-amortize";
@@ -34,6 +35,7 @@ const styles = StyleSheet.create({
   horiz: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "space-between",
   },
   page: {
     flexDirection: "column",
@@ -45,7 +47,23 @@ const styles = StyleSheet.create({
     padding: 10,
     flexGrow: 1,
   },
+  fullTableHeader: {
+    borderBottom: "1px solid black",
+    width: "100%",
+    paddingBottom: 4,
+    fontWeight: "bold",
+  },
+  sectionHeader: {
+    color: "white",
+    backgroundColor: "black",
+    padding: 4,
+    marginTop: 70,
+  },
 });
+
+const HorizontalView = (props: React.PropsWithChildren<ViewProps>) => (
+  <View style={{ ...styles.horiz, ...props.style }}>{props.children}</View>
+);
 
 function Logo({
   h,
@@ -103,18 +121,15 @@ const AmortizationPages = ({
                 backgroundColor: "black",
                 color: "white",
                 padding: 4,
-                fontSize: 12,
                 marginBottom: 4,
               }}
             >
               Amortization Schedule (Page {i + 1} of {pages.length})
             </Text>
             <View style={{ ...styles.vert, fontSize: 10 }}>
-              <View
+              <HorizontalView
                 style={{
-                  ...styles.horiz,
                   fontWeight: "bold",
-                  justifyContent: "space-between",
                   borderBottom: "1px solid #000000",
                 }}
               >
@@ -128,15 +143,11 @@ const AmortizationPages = ({
                 <Text style={{ width: "25%", textAlign: "right" }}>
                   Balance
                 </Text>
-              </View>
+              </HorizontalView>
               {page.map((p, j) => (
-                <View
+                <HorizontalView
                   key={j}
-                  style={{
-                    ...styles.horiz,
-                    borderBottom: "1px solid #555555",
-                    paddingTop: 2,
-                  }}
+                  style={{ borderBottom: "1px solid #555555", paddingTop: 2 }}
                 >
                   <Text style={{ width: "25%" }}>{formatDate(p.date)}</Text>
                   <Text style={{ width: "25%", textAlign: "right" }}>
@@ -148,7 +159,7 @@ const AmortizationPages = ({
                   <Text style={{ width: "25%", textAlign: "right" }}>
                     {formatMoney(p.remaining)}
                   </Text>
-                </View>
+                </HorizontalView>
               ))}
             </View>
           </View>
@@ -205,20 +216,9 @@ const LoanStatementDocument = (args: {
     <Document>
       <Page size="LETTER" style={styles.page}>
         <View style={styles.section}>
-          <View
-            style={{
-              ...styles.horiz,
-              justifyContent: "space-between",
-            }}
-          >
+          <HorizontalView>
             <Logo w={45} h={45} />
-            <View
-              style={{
-                ...styles.vert,
-                alignItems: "flex-end",
-                gap: 3,
-              }}
-            >
+            <View style={{ ...styles.vert, alignItems: "flex-end", gap: 3 }}>
               <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                 Loan Statement
               </Text>
@@ -226,38 +226,24 @@ const LoanStatementDocument = (args: {
                 Statement Date: {formatDate(statementTime)}
               </Text>
             </View>
-          </View>
-
-          <View
-            style={{
-              marginTop: 70,
-              ...styles.horiz,
-              justifyContent: "space-between",
-              gap: 30,
-            }}
-          >
-            <View
-              style={{
-                fontStyle: "italic",
-                width: "48%",
-                ...styles.vert,
-                gap: 4,
-              }}
-            >
+          </HorizontalView>
+          <HorizontalView style={{ marginTop: 70, gap: 30 }}>
+            <View style={{ ...styles.vert, fontStyle: "italic", width: "48%" }}>
               <Text style={{ fontSize: 10 }}>
                 This statement was generated using Loan Wolf at{" "}
-                {new Date().toLocaleString("utc", {
-                  timeZone: "UTC",
-                  timeZoneName: "short",
-                })}
+                <Text style={{ fontWeight: "bold" }}>
+                  {new Date().toLocaleString("utc", {
+                    timeZone: "UTC",
+                    timeZoneName: "short",
+                  })}
+                </Text>
                 .
               </Text>
-              <Text style={{ fontSize: 10 }}>
+              <Text style={{ fontSize: 10, marginTop: 15 }}>
                 Learn more about Loan Wolf at{" "}
                 <Link style={{ color: "black" }} src="https://loanwolf.app">
                   https://loanwolf.app
                 </Link>
-                .
               </Text>
             </View>
             <View
@@ -265,214 +251,121 @@ const LoanStatementDocument = (args: {
                 border: "1px solid #000000",
                 padding: 6,
                 width: "48%",
-                gap: 8,
+                ...styles.vert,
+                gap: 5,
               }}
             >
-              {/* TODO: consider adding a loan number to be a lil more standard */}
-              {/* <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 12 }}>Loan Number</Text>
-                <Text style={{ fontSize: 12, fontWeight: "bold" }}>
-                  {hashCode(loan.publicId)}
-                </Text>
-              </View> */}
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 12 }}>Loan Name</Text>
-                <Text style={{ fontSize: 12, fontWeight: "bold" }}>
-                  {args.loan.name}
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 12 }}>Payment Due Date</Text>
-                <Text style={{ fontSize: 12, fontWeight: "bold" }}>
+              <HorizontalView>
+                <Text>Loan Name</Text>
+                <Text style={{ fontWeight: "bold" }}>{args.loan.name}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Payment Due Date</Text>
+                <Text style={{ fontWeight: "bold" }}>
                   {formatDate(currentPayment.date)}
                 </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
+              </HorizontalView>
+              <HorizontalView>
                 <Text style={{ fontSize: 14, fontWeight: "bold" }}>
                   Total Amount Due
                 </Text>
                 <Text style={{ fontSize: 16, fontWeight: "bold" }}>
                   {formatMoney(currentPayment.total)}
                 </Text>
-              </View>
+              </HorizontalView>
             </View>
-          </View>
-
-          <View
-            style={{
-              color: "white",
-              backgroundColor: "black",
-              padding: 4,
-              marginTop: 60,
-            }}
-          >
+          </HorizontalView>
+          <View style={styles.sectionHeader}>
             <Text>Current Payment</Text>
           </View>
-
-          <View
-            style={{
-              ...styles.horiz,
-              justifyContent: "space-between",
-              paddingTop: 10,
-            }}
-          >
+          <HorizontalView style={{ paddingTop: 10, fontSize: 10 }}>
             <View style={{ ...styles.vert, gap: 4, width: "46%" }}>
-              <View
-                style={{
-                  borderBottom: "1px solid #000000",
-                  width: "100%",
-                  paddingBottom: 4,
-                }}
-              >
+              <View style={styles.fullTableHeader}>
                 <Text style={{ fontSize: 11, fontWeight: "bold" }}>
                   Payment Breakdown
                 </Text>
               </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Principal</Text>
-                <Text style={{ fontSize: 10 }}>{formatMoney(principal)}</Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Interest</Text>
-                <Text style={{ fontSize: 10 }}>{formatMoney(interest)}</Text>
-              </View>
-              <View
+              <HorizontalView>
+                <Text>Principal</Text>
+                <Text>{formatMoney(principal)}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Interest</Text>
+                <Text>{formatMoney(interest)}</Text>
+              </HorizontalView>
+              <HorizontalView
                 style={{
                   borderTop: "1px solid #000000",
                   width: "100%",
                   paddingTop: 4,
-                  ...styles.horiz,
-                  justifyContent: "space-between",
                   fontSize: 11,
                   fontWeight: "bold",
                 }}
               >
                 <Text>Regular Monthly Payment</Text>
                 <Text>{formatMoney(getMonthlyPayment(loan))}</Text>
-              </View>
+              </HorizontalView>
             </View>
-
-            <View style={{ ...styles.vert, gap: 4, width: "46%" }}>
-              <View
-                style={{
-                  borderBottom: "1px solid #000000",
-                  width: "100%",
-                  paddingBottom: 4,
-                }}
-              >
+            <View
+              style={{ ...styles.vert, gap: 4, width: "46%", fontSize: 10 }}
+            >
+              <View style={styles.fullTableHeader}>
                 <Text style={{ fontSize: 11, fontWeight: "bold" }}>
                   Loan Summary
                 </Text>
               </View>
+              <HorizontalView>
+                <Text>Original Principal</Text>
+                <Text>{formatMoney(loan.originalAmount)}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Origination Date</Text>
+                <Text>{formatDate(args.loan.startAt)}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Original Maturity Date</Text>
+                <Text>{formatDate(originalMaturityDate)}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Maturity Date</Text>
+                <Text>{formatDate(currentMaturityDate)}</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Interest Rate</Text>
+                <Text>{formatInterestRate(args.loan.interestRate)}%</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Term</Text>
+                <Text>{args.loan.term} months</Text>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Principal Balance</Text>
+                <Text>{formatMoney(loan.amount)}</Text>
+              </HorizontalView>
 
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Original Principal</Text>
-                <Text style={{ fontSize: 10 }}>
-                  {formatMoney(loan.originalAmount)}
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Origination Date</Text>
-                <Text style={{ fontSize: 10 }}>
-                  {formatDate(args.loan.startAt)}
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Original Maturity Date</Text>
-                <Text style={{ fontSize: 10 }}>
-                  {formatDate(originalMaturityDate)}
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Maturity Date</Text>
-                <Text style={{ fontSize: 10 }}>
-                  {formatDate(currentMaturityDate)}
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Interest Rate</Text>
-                <Text style={{ fontSize: 10 }}>
-                  {formatInterestRate(args.loan.interestRate)}%
-                </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Term</Text>
-                <Text style={{ fontSize: 10 }}>{args.loan.term} months</Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Principal Balance</Text>
-                <Text style={{ fontSize: 10 }}>{formatMoney(loan.amount)}</Text>
-              </View>
-
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Principal Paid To Date</Text>
-                <Text style={{ fontSize: 10 }}>
+              <HorizontalView>
+                <Text>Principal Paid To Date</Text>
+                <Text>
                   {formatMoney(
                     payments.reduce((acc, p) => acc + p.principal, 0)
                   )}
                 </Text>
-              </View>
-              <View
-                style={{ ...styles.horiz, justifyContent: "space-between" }}
-              >
-                <Text style={{ fontSize: 10 }}>Interest Paid To Date</Text>
-                <Text style={{ fontSize: 10 }}>
+              </HorizontalView>
+              <HorizontalView>
+                <Text>Interest Paid To Date</Text>
+                <Text>
                   {formatMoney(
                     payments.reduce((acc, p) => acc + p.interest, 0)
                   )}
                 </Text>
-              </View>
+              </HorizontalView>
             </View>
-          </View>
-          <View
-            style={{
-              color: "white",
-              backgroundColor: "black",
-              padding: 4,
-              marginTop: 90,
-            }}
-          >
+          </HorizontalView>
+          <View style={styles.sectionHeader}>
             <Text>Payment History (90 days)</Text>
           </View>
           <View style={{ marginTop: 10, fontSize: 10 }}>
-            <View
-              style={{
-                borderBottom: "1px solid #000000",
-                width: "100%",
-                paddingBottom: 4,
-                ...styles.horiz,
-                justifyContent: "space-between",
-                fontWeight: "bold",
-              }}
-            >
+            <HorizontalView style={styles.fullTableHeader}>
               <Text style={{ width: "20%" }}>Date</Text>
               <Text style={{ width: "20%", textAlign: "right" }}>Payment</Text>
               <Text style={{ width: "20%", textAlign: "right" }}>
@@ -480,16 +373,9 @@ const LoanStatementDocument = (args: {
               </Text>
               <Text style={{ width: "20%", textAlign: "right" }}>Interest</Text>
               <Text style={{ width: "20%", textAlign: "right" }}>Balance</Text>
-            </View>
+            </HorizontalView>
             {recentPayments.map((p) => (
-              <View
-                key={p.id}
-                style={{
-                  ...styles.horiz,
-                  justifyContent: "space-between",
-                  marginTop: 2,
-                }}
-              >
+              <HorizontalView key={p.id} style={{ marginTop: 2 }}>
                 <Text style={{ width: "20%" }}>{formatDate(p.date)}</Text>
                 <Text style={{ width: "20%", textAlign: "right" }}>
                   {formatMoney(p.amount)}
@@ -503,7 +389,7 @@ const LoanStatementDocument = (args: {
                 <Text style={{ width: "20%", textAlign: "right" }}>
                   {formatMoney(p.remaining)}
                 </Text>
-              </View>
+              </HorizontalView>
             ))}
           </View>
         </View>
