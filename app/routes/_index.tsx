@@ -1,7 +1,13 @@
 import { Text, Flex, Button, Anchor } from "@mantine/core";
-import type { MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type LoaderFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
 
 import { Logo } from "~/comps/logo";
+import { getSession } from "~/utils/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -13,7 +19,14 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const loans = session.get("loans") || [];
+  return json({ loanCount: loans.length });
+};
+
 export default function Index() {
+  const { loanCount } = useLoaderData<typeof loader>();
   return (
     <Flex direction="column" align="center" justify="center" gap="md" p="sm">
       <Logo h={128} w={128} />
@@ -43,6 +56,13 @@ export default function Index() {
       >
         Track loan payments like you&apos;re on the hunt!
       </Text>
+      {loanCount > 0 ? (
+        <Text>
+          You have <Link to="/loans"> {loanCount} loans.</Link>
+        </Text>
+      ) : (
+        <></>
+      )}
       <Button
         component="a"
         href="/loans/sample-loan"
