@@ -37,7 +37,9 @@ export function AmortizationTable({ payments, total }: AmortizationTableProps) {
         </Button>
       </Flex>
       <Collapse in={opened}>
-        <Space h="xs" />
+        <Space h="sm" />
+        <Title order={6}>{payments.length} Payments Remaining</Title>
+        <Space h="sm" />
         <Table.ScrollContainer minWidth={600}>
           <Table withColumnBorders>
             <Table.Thead>
