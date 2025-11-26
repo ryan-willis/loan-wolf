@@ -9,12 +9,10 @@ import {
 
 export function LoanSummary({
   loan,
-  totalInterest,
   originalAmount,
   showManage = false,
 }: {
-  loan: ILoan;
-  totalInterest: number;
+  loan: ILoan & { totalInterest: number; originalAmount: number };
   originalAmount: number;
   showManage?: boolean;
 }) {
@@ -61,7 +59,7 @@ export function LoanSummary({
             <Table.Th style={{ width: 5, whiteSpace: "nowrap" }}>
               Interest Paid To Date
             </Table.Th>
-            <Table.Td>{formatMoney(totalInterest)}</Table.Td>
+            <Table.Td>{formatMoney(loan.totalInterest)}</Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Th>Term</Table.Th>

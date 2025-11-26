@@ -171,10 +171,8 @@ const AmortizationPages = ({
 
 // Create Document Component
 const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
-  const { payments, loan } = usePaymentHistory({
-    loan: args.loan,
-    payments: args.payments,
-  });
+  const baseUrl = process.env.LOAN_WOLF_BASE_URL || "https://loanwolf.app";
+  const { payments, loan } = usePaymentHistory(args);
   const { payments: originalAmortizationPayments } = useAmortize({
     loan: {
       ...args.loan,
@@ -237,8 +235,8 @@ const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
               </Text>
               <Text style={{ fontSize: 10, marginTop: 15 }}>
                 Learn more about Loan Wolf at{" "}
-                <Link style={{ color: "black" }} src="https://loanwolf.app">
-                  https://loanwolf.app
+                <Link style={{ color: "black" }} src={baseUrl}>
+                  {baseUrl}
                 </Link>
               </Text>
             </View>
