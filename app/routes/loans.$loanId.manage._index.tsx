@@ -168,7 +168,6 @@ function LoanManageAccessForm({ message }: { message?: string }) {
               name="password"
               label="Secret Password"
               error={message}
-              required
             />
           </Grid.Col>
         </Grid>
@@ -237,11 +236,7 @@ export default function LoanManageRoute() {
           )}
         </CopyButton>
       </Flex>
-      <LoanSummary
-        loan={loan}
-        totalInterest={loan.totalInterest}
-        originalAmount={loaderData.amount}
-      />
+      <LoanSummary loan={loan} originalAmount={loaderData.amount} />
       <Space h="xs" />
       <Flex justify="end" p="sm">
         <Button

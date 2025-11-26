@@ -1,3 +1,4 @@
+import { ILoan } from "~/types";
 import { getMonthlyPayment, getPrincipalInterestSpread } from "~/utils/money";
 
 interface AmortizationPayment {
@@ -12,11 +13,7 @@ export function useAmortize({
   loan,
   payments: originalPayments,
 }: {
-  loan: {
-    startAt: number;
-    term: number;
-    amount: number;
-    interestRate: number;
+  loan: Omit<ILoan, "name" | "publicId"> & {
     totalInterest: number;
     originalAmount: number;
   };
