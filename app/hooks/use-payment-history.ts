@@ -21,7 +21,7 @@ export function usePaymentHistory({
       if (!isPrincipalOnly)
         paymentDue.setUTCMonth(
           start.getUTCMonth() + (payment.installment || 0),
-          start.getUTCDate()
+          loan.intervalDayOfMonth
         );
       const { principal, interest } = isPrincipalOnly
         ? {

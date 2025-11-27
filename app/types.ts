@@ -41,6 +41,7 @@ export interface ILoan {
   term: number;
   originalAmount?: number;
   startAt: number;
+  intervalDayOfMonth: number;
 }
 
 export interface IPayment {

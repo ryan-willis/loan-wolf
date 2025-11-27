@@ -25,7 +25,9 @@ import {
   getMonthlyPayment,
 } from "~/utils/money";
 
-const FOURTEEN_DAYS = 14 * 24 * 60 * 60 * 1000;
+const _DAYS = 24 * 60 * 60 * 1000;
+const FOURTEEN_DAYS = 14 * _DAYS;
+const NINETY_DAYS = 90 * _DAYS;
 
 const styles = StyleSheet.create({
   vert: {
@@ -170,7 +172,11 @@ const AmortizationPages = ({
 };
 
 // Create Document Component
-const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
+const LoanStatementDocument = (args: {
+  loan: Loan;
+  payments: Payment[];
+  includeAmortization: boolean;
+}) => {
   const baseUrl = process.env.LOAN_WOLF_BASE_URL || "https://loanwolf.app";
   const { payments, loan } = usePaymentHistory(args);
   const { payments: originalAmortizationPayments } = useAmortize({
@@ -195,7 +201,7 @@ const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
 
   const recentPayments = payments.filter((p) =>
     isWithinInterval(p.date, {
-      start: statementTime - 90 * 24 * 60 * 60 * 1000,
+      start: statementTime - NINETY_DAYS,
       end: currentPayment.date.getTime(),
     })
   );
@@ -388,7 +394,7 @@ const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
           </View>
         </View>
       </Page>
-      {amortizationPayments.length > 0 && (
+      {args.includeAmortization && amortizationPayments.length > 0 && (
         <AmortizationPages amortizationPayments={amortizationPayments} />
       )}
     </Document>
@@ -398,4 +404,5 @@ const LoanStatementDocument = (args: { loan: Loan; payments: Payment[] }) => {
 export const getLoanStatementPDF = async (args: {
   loan: Loan;
   payments: Payment[];
-}) => renderToBuffer(<LoanStatementDocument {...args} />);
+  includeAmortization: boolean;
+}) => await renderToBuffer(<LoanStatementDocument {...args} />);

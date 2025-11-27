@@ -22,6 +22,7 @@ import { formatDate } from "~/utils/date";
 import { db } from "~/utils/db.server";
 import { formatMoney, getMonthlyPayment } from "~/utils/money";
 import { hashPassword } from "~/utils/security.server";
+import { getOrdinalSuffix } from "~/utils/number";
 
 export async function action({ request }: ActionFunctionArgs) {
   const form = await request.formData();
@@ -32,6 +33,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const startAt = new Date(String(form.get("start_date"))).getTime();
   const paymentInterval = Number(form.get("payment_interval"));
   const managePasswordRaw = String(form.get("manage_password"));
+  const intervalDayOfMonth = Number(form.get("interval_day_of_month"));
   const interestCompounds = paymentInterval;
 
   const data = {
@@ -45,6 +47,7 @@ export async function action({ request }: ActionFunctionArgs) {
     status: "active",
     publicId: new ShortUniqueId({ length: 10 }).randomUUID(),
     managePassword: await hashPassword(managePasswordRaw),
+    intervalDayOfMonth: intervalDayOfMonth || 1,
   };
 
   const loan = await db.loan.create({ data });
@@ -75,6 +78,7 @@ export default function CreateLoanRoute() {
     start_date,
     payment_interval: "5",
     manage_password: "",
+    interval_day_of_month: "1",
   });
 
   const monthly = getMonthlyPayment({
@@ -96,6 +100,7 @@ export default function CreateLoanRoute() {
       term: Number(loan.num_installments),
       totalInterest: 0,
       originalAmount: Number(loan.principal_amount),
+      intervalDayOfMonth: Number(loan.interval_day_of_month),
     },
     payments: [],
   });
@@ -113,7 +118,20 @@ export default function CreateLoanRoute() {
             <Grid.Col span={{ base: 12, xs: 6, sm: 4 }}>
               <TextInput label="Name" name="loan_name" required />
             </Grid.Col>
-            <Grid.Col span={{ base: 12, xs: 6, sm: 0 }} p={0} />
+            <Grid.Col span={{ base: 12, xs: 6, sm: 4 }}>
+              <PasswordInput
+                label="Password"
+                name="manage_password"
+                value={loan.manage_password}
+                onChange={(event) =>
+                  setLoan({
+                    ...loan,
+                    manage_password: event.currentTarget.value,
+                  })
+                }
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 0, xs: 0, sm: 4 }} m={0} p={0} />
             <Grid.Col span={{ base: 6, sm: 4 }}>
               <TextInput
                 label="Loan Amount"
@@ -208,16 +226,20 @@ export default function CreateLoanRoute() {
               </Tooltip>
             </Grid.Col>
             <Grid.Col span={{ base: 6, sm: 4 }}>
-              <PasswordInput
-                label="Password"
-                name="manage_password"
-                value={loan.manage_password}
+              <NativeSelect
+                label="Payment Day"
+                name="interval_day_of_month"
+                value={loan.interval_day_of_month}
                 onChange={(event) =>
                   setLoan({
                     ...loan,
-                    manage_password: event.currentTarget.value,
+                    interval_day_of_month: event.currentTarget.value,
                   })
                 }
+                data={Array.from({ length: 28 }, (_, i) => ({
+                  value: (i + 1).toString(),
+                  label: `${i + 1}${getOrdinalSuffix(i + 1)}`,
+                }))}
               />
             </Grid.Col>
           </Grid>

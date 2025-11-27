@@ -6,6 +6,7 @@ import {
   formatMoney,
   getMonthlyPayment,
 } from "~/utils/money";
+import { getOrdinalSuffix } from "~/utils/number";
 
 export function LoanSummary({
   loan,
@@ -64,6 +65,13 @@ export function LoanSummary({
           <Table.Tr>
             <Table.Th>Term</Table.Th>
             <Table.Td>{loan.term} months</Table.Td>
+          </Table.Tr>
+          <Table.Tr>
+            <Table.Th>Payment Day</Table.Th>
+            <Table.Td>
+              {loan.intervalDayOfMonth}
+              {getOrdinalSuffix(loan.intervalDayOfMonth)}
+            </Table.Td>
           </Table.Tr>
           <Table.Tr>
             <Table.Th>Started</Table.Th>

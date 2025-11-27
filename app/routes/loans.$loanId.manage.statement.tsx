@@ -1,6 +1,7 @@
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { getLoan } from "~/services/loan.server";
 import { getLoanStatementPDF } from "~/services/statement.server";
+import { isTruthy } from "~/utils/boolean";
 import { getSession } from "~/utils/session.server";
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
@@ -22,8 +23,19 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     });
   }
 
+  const url = new URL(request.url);
+  const includeAmortization =
+    url.searchParams.has("amortize") &&
+    isTruthy(url.searchParams.get("amortize"));
+
   return new Response(
-    await getLoanStatementPDF({ loan, payments: loan.payments }),
+    Buffer.from(
+      await getLoanStatementPDF({
+        loan,
+        payments: loan.payments,
+        includeAmortization,
+      })
+    ),
     {
       headers: {
         "Content-Type": "application/pdf",
