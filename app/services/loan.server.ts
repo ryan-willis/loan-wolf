@@ -15,6 +15,7 @@ export const getLoan = async (
         paidAt: "asc",
       },
     },
+    intervalDayOfMonth: true,
   }
 ) => {
   const loans = await db.loan.findMany({

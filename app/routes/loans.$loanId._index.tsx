@@ -16,36 +16,30 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
       statusText: "Not Found",
     });
   }
-  return json(loan);
+  const { payments, ...loanData } = loan;
+  return json({ payments, loan: loanData });
 };
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  return [{ title: `${data?.name || "Loan"} - Loan Wolf` }];
+  return [{ title: `${data?.loan.name || "Loan"} - Loan Wolf` }];
 };
 
 export default function LoanRoute() {
   const loaderData = useLoaderData<typeof loader>();
 
-  const { payments, loan } = usePaymentHistory({
-    loan: loaderData,
-    payments: loaderData.payments,
-  });
-  const { payments: amortizationPayments, total } = useAmortize({
-    loan,
-    payments,
-  });
+  const { payments, loan } = usePaymentHistory(loaderData);
+  const { payments: amortized, total } = useAmortize({ loan, payments });
   return (
     <>
       <LoanSummary
         loan={loan}
-        totalInterest={loan.totalInterest}
-        originalAmount={loaderData.amount}
+        originalAmount={loaderData.loan.amount}
         showManage
       />
       <Space h="xs" />
       <PaymentHistoryTable payments={payments} />
       <Space h="xs" />
-      <AmortizationTable payments={amortizationPayments} total={total} />
+      <AmortizationTable payments={amortized} total={total} />
     </>
   );
 }

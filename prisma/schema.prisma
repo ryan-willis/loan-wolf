@@ -22,6 +22,7 @@ model Loan {
   paymentInterval Int // see PaymentInterval TypeScript enum
   managePassword String @default("denied")
   payments Payment[]
+  intervalDayOfMonth Int @default(1) // maximum of 28
 }
 
 model Payment {

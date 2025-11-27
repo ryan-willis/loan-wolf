@@ -39,7 +39,7 @@ export function useAmortize({
       const paymentDate = new Date(loan.startAt);
       paymentDate.setUTCMonth(
         paymentDate.getUTCMonth() + installmentsMade + i + 1,
-        paymentDate.getUTCDate()
+        loan.intervalDayOfMonth
       );
       if (cursor.amount === 0) return null;
       const amounts = getPrincipalInterestSpread(cursor, { amount });
