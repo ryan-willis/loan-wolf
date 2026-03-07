@@ -34,4 +34,6 @@ model Payment {
   amount Float
   paidAt Float
   installment Int @default(0) // which of the interval payments this applies to, 0 if principal-only
+  principalAmount Float?
+  interestAmount Float?
 }

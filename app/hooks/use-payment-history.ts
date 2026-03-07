@@ -17,18 +17,25 @@ export function usePaymentHistory({
   const payments = originalPayments
     .map((payment) => {
       const isPrincipalOnly = payment.installment === 0;
+      const hasOverride =
+        payment.principalAmount != null && payment.interestAmount != null;
       const paymentDue = new Date(start);
       if (!isPrincipalOnly)
         paymentDue.setUTCMonth(
           start.getUTCMonth() + (payment.installment || 0),
           loan.intervalDayOfMonth
         );
-      const { principal, interest } = isPrincipalOnly
+      const { principal, interest } = hasOverride
         ? {
-            principal: payment.amount,
-            interest: 0,
+            principal: payment.principalAmount!,
+            interest: payment.interestAmount!,
           }
-        : getPrincipalInterestSpread(loan, payment);
+        : isPrincipalOnly
+          ? {
+              principal: payment.amount,
+              interest: 0,
+            }
+          : getPrincipalInterestSpread(loan, payment);
       loan.amount -= principal;
       loan.totalInterest += interest;
       return {

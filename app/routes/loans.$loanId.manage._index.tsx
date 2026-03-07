@@ -52,7 +52,7 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
     });
   }
 
-  if (["remove-payment", "add-payment"].includes(_action)) {
+  if (["remove-payment", "add-payment", "edit-payment"].includes(_action)) {
     const session = await getSession(request.headers.get("Cookie"));
     const cannotManage =
       !session ||
@@ -73,6 +73,20 @@ export const action = async ({ request, params }: LoaderFunctionArgs) => {
       where: {
         id: paymentId,
       },
+    });
+    return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
+  }
+
+  if (_action === "edit-payment") {
+    const paymentId = String(form.get("payment"));
+    const principalAmount = Number(form.get("principal"));
+    const interestAmount = Number(form.get("interest"));
+    const amount =
+      Math.round((principalAmount + interestAmount) * 100) / 100;
+
+    await db.payment.update({
+      where: { id: paymentId },
+      data: { amount, principalAmount, interestAmount },
     });
     return redirect(`/loans/${loan.publicId}/manage`, { status: 303 });
   }

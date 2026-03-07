@@ -49,4 +49,6 @@ export interface IPayment {
   paidAt: number;
   installment?: number;
   amount: number;
+  principalAmount?: number | null;
+  interestAmount?: number | null;
 }
