@@ -76,6 +76,8 @@ If any of the `_SECRET` environment variables are not specified, randomly genera
   - A secure string for hashing passwords in the database (uses `argon2` under the hood).
 - `DATABASE_URL`
   - The connection string for the SQLite database (defaults to `file:/data/loan-wolf/sqlite3.db`).
+- `LOAN_WOLF_BASE_URL`
+  - The base URL for the application to for generated links (statements, etc.) (defaults to `https://loanwolf.app`).
 
 ## Local Development
 
